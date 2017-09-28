@@ -12,6 +12,7 @@ loader.load('assets/globe-countries.obj', function(obj) {
 	land.position.y = -40;
 	land.position.x = 20;
 	land.scale.x = land.scale.y = land.scale.z = 5;
+	console.log(land);
 
 	scene.add(land);
 });
@@ -27,8 +28,6 @@ loader.load('assets/wire-globe.obj', function(obj) {
 			child.material = material;
 		}
 	})
-
-	console.log(sea);
 
 	scene.add(sea);
 })
@@ -47,8 +46,8 @@ scene.add( plane );
 
 plane.receiveShadow = true;
 
-camera.position.y = 5
-camera.position.z = 25
+camera.position.y = 12;
+camera.position.z = 5;
 
 function animate() {
 	requestAnimationFrame(animate);
