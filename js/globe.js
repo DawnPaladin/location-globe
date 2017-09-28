@@ -5,16 +5,33 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-var loader = new THREE.OBJLoader(), globe;
+var loader = new THREE.OBJLoader(), land, sea;
 loader.load('assets/globe-countries.obj', function(obj) {
-	globe = obj;
+	land = obj;
 
-	globe.position.y = -40;
-	globe.position.x = 20;
-	globe.scale.x = globe.scale.y = globe.scale.z = 5;
+	land.position.y = -40;
+	land.position.x = 20;
+	land.scale.x = land.scale.y = land.scale.z = 5;
 
-	scene.add(globe);
+	scene.add(land);
 });
+loader.load('assets/wire-globe.obj', function(obj) {
+	sea = obj;
+
+	sea.scale.x = sea.scale.y = sea.scale.z = 3;
+	sea.position.y = -25;
+
+	var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+	sea.traverse(function(child) {
+		if (child instanceof THREE.Mesh) {
+			child.material = material;
+		}
+	})
+
+	console.log(sea);
+
+	scene.add(sea);
+})
 
 var light = new THREE.AmbientLight( 0x404040 ); // soft white light
 scene.add(light);
