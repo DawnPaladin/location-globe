@@ -42,7 +42,7 @@ function animate() {
 	requestAnimationFrame(animate);
 
 	if (globe) {
-		globe.rotation.y += .01;
+		// globe.rotation.y += .01;
 		updateLocations();
 	}
 
@@ -84,6 +84,10 @@ var locations = {
 	Dallas: {
 		lat: 32.777663, 
 		long: -96.630416
+	},
+	Opp: {
+		lat: 32.777663, 
+		long: -96.630416 + 180
 	}
 }
 function populateLocations() {
@@ -94,9 +98,17 @@ function populateLocations() {
 		locationData.marker = $marker;
 		var sceneCoords = latLongToSceneCoords(locationData.lat, locationData.long);
 		var screenCoords = sceneToScreenCoords(sceneCoords);
+		var point = new THREE.Points();
+		point.position.x = sceneCoords.x;
+		point.position.y = sceneCoords.y;
+		point.position.z = sceneCoords.z;
+		scene.add(point);
+		locationData.point = point;
+		console.log(point);
 		$marker.css({
 			top: screenCoords.y,
-			left: screenCoords.x
+			left: screenCoords.x,
+			opacity: determineLocationVisibility(point) ? 1 : 0,
 		});
 		$marker.appendTo('body');
 	}
@@ -109,7 +121,18 @@ function updateLocations() {
 		var screenCoords = sceneToScreenCoords(sceneCoords);
 		$marker.css({
 			top: screenCoords.y,
-			left: screenCoords.x
+			left: screenCoords.x,
+			// opacity: determineLocationVisibility(sceneCoords) ? 1 : 0,			
 		});
 	}
+}
+var raycaster = new THREE.Raycaster();
+function determineLocationVisibility(point) {
+	raycaster.setFromCamera(point.position, camera);
+	// var intersects = point.raycast(raycaster);
+	// var intersects = raycaster.intersectObject(globe);
+	// console.log(intersects);
+
+	// TODO: Determine whether a ray sent from the camera intersects the point before or after passing through the globe.
+	return true;
 }
