@@ -6,8 +6,8 @@ function sceneSetup() {
 		renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
 	
-	var loader = new THREE.OBJLoader();
-	loader.load('assets/globes_pack_thin26.obj', function(obj) {
+	var loader = new THREE.OBMLoader();
+	loader.load('assets/globes_pack_thin26small.obm', function(obj) {
 		globe = obj;
 	
 		// var mat = new THREE.MeshPhongMaterial( { color: 0x999999, specular: 0x101010 } );
