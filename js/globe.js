@@ -23,7 +23,7 @@ function sceneSetup() {
 		var box = new THREE.Box3().setFromObject(globe);
 		globe.radius = box.max;
 
-		test();
+		populateLocations(locations);		
 	});
 
 	var light = new THREE.PointLight(0x404040); // soft white light
@@ -41,24 +41,28 @@ sceneSetup();
 function animate() {
 	requestAnimationFrame(animate);
 
-	// if (globe) globe.rotation.y += .001;
+	if (globe) {
+		globe.rotation.y += .01;
+		updateLocations();
+	}
 
 	renderer.render(scene, camera);
 }
 animate();
 
 function latLongToSceneCoords(lat, lon) {
-	var out = new THREE.Vector3();
+	var sceneCoords = new THREE.Vector3();
 	var radius = globe.radius.y;
+	var rotation = globe.rotation.y;
 	
-	var phi   = (90-lat)*(Math.PI/180)
-	var theta = (lon+180)*(Math.PI/180)
+	var phi   = (90-lat)*(Math.PI/180);
+	var theta = (lon+180)*(Math.PI/180) + rotation;
 
-	out.x = -((radius) * Math.sin(phi)*Math.cos(theta))
-	out.z = ((radius) * Math.sin(phi)*Math.sin(theta))
-	out.y = ((radius) * Math.cos(phi))
+	sceneCoords.x = -((radius) * Math.sin(phi)*Math.cos(theta));
+	sceneCoords.z = ((radius) * Math.sin(phi)*Math.sin(theta));
+	sceneCoords.y = ((radius) * Math.cos(phi));
 
-	return out;
+	return sceneCoords;
 }
 
 function sceneToScreenCoords(sceneCoords) {
@@ -76,15 +80,36 @@ function sceneToScreenCoords(sceneCoords) {
 	return vector;
 }
 
-function test() {
-	var $southPole = $('<img src="assets/marker.svg" alt="" class="marker" />');
-	var sceneCoords = latLongToSceneCoords(32.777663, -96.630416);
-	var screenCoords = sceneToScreenCoords(sceneCoords);
-	console.log("sceneCoords:", sceneCoords, "screenCoords", screenCoords);
-	$southPole.css({
-		top: screenCoords.y,
-		left: screenCoords.x
-	});
-	var $body = $('body');
-	$body.append($southPole);
+var locations = {
+	Dallas: {
+		lat: 32.777663, 
+		long: -96.630416
+	}
+}
+function populateLocations() {
+	for (var locationName in locations) {
+		var $marker = $('<img src="assets/marker.svg" alt="" class="marker" />');
+		$marker.attr('id', locationName);
+		var locationData = locations[locationName];
+		locationData.marker = $marker;
+		var sceneCoords = latLongToSceneCoords(locationData.lat, locationData.long);
+		var screenCoords = sceneToScreenCoords(sceneCoords);
+		$marker.css({
+			top: screenCoords.y,
+			left: screenCoords.x
+		});
+		$marker.appendTo('body');
+	}
+}
+function updateLocations() {
+	for (var locationName in locations) {
+		var locationData = locations[locationName];
+		var $marker = locationData.marker;
+		var sceneCoords = latLongToSceneCoords(locationData.lat, locationData.long);
+		var screenCoords = sceneToScreenCoords(sceneCoords);
+		$marker.css({
+			top: screenCoords.y,
+			left: screenCoords.x
+		});
+	}
 }
