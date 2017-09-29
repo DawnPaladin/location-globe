@@ -14,7 +14,7 @@ loader.load('assets/globe-countries.obj', function(obj) {
 	land.scale.x = land.scale.y = land.scale.z = 5;
 	console.log(land);
 
-	scene.add(land);
+	// scene.add(land);
 });
 loader.load('assets/wire-globe.obj', function(obj) {
 	sea = obj;
@@ -29,7 +29,13 @@ loader.load('assets/wire-globe.obj', function(obj) {
 		}
 	})
 
-	scene.add(sea);
+	// scene.add(sea);
+})
+var globe;
+loader.load('assets/globes_pack7.obj', function(obj) {
+	globe = obj;
+
+	scene.add(globe);
 })
 
 var light = new THREE.AmbientLight( 0x404040 ); // soft white light
@@ -46,7 +52,7 @@ scene.add( plane );
 
 plane.receiveShadow = true;
 
-camera.position.y = 12;
+// camera.position.y = 12;
 camera.position.z = 5;
 
 function animate() {
