@@ -7,7 +7,7 @@ function sceneSetup() {
 	document.body.appendChild(renderer.domElement);
 	
 	var loader = new THREE.OBJLoader();
-	loader.load('assets/globes_pack13.obj', function(obj) {
+	loader.load('assets/globes_pack_thin26.obj', function(obj) {
 		globe = obj;
 	
 		// var mat = new THREE.MeshPhongMaterial( { color: 0x999999, specular: 0x101010 } );
@@ -28,7 +28,7 @@ function sceneSetup() {
 	scene.background = new THREE.Color(0x72645b);
 	
 	camera.position.y = 1;
-	camera.position.z = 2.5;
+	camera.position.z = 3;
 	camera.rotation.x = -0.4;
 }
 sceneSetup();
@@ -41,3 +41,24 @@ function animate() {
 	renderer.render(scene, camera);
 }
 animate();
+
+function sceneToScreenCoords(x, y, z) {
+	var vector = new THREE.Vector3();
+	var canvas = renderer.domElement;
+	vector.set(x, y, z);
+
+	vector.project(camera);
+
+	vector.x = Math.round( (  vector.x + 1 ) * canvas.width  / 2 );
+	vector.y = Math.round( ( -vector.y + 1 ) * canvas.height / 2 );
+	vector.z = 0;
+
+	return vector;
+}
+var $center = $('<img src="assets/marker.svg" alt="" class="marker" />');
+var coords = sceneToScreenCoords(0,0,0);
+$center.css({
+	top: coords.y,
+	left: coords.x
+});
+$center.appendTo('body');
