@@ -112,8 +112,14 @@ function updateLocations() {
 		$marker.css({
 			top: screenCoords.y,
 			left: screenCoords.x,
-			opacity: determineLocationVisibility(sceneCoords) ? 1 : 0,			
 		});
+
+		if ($marker.css('opacity') == 0 && determineLocationVisibility(sceneCoords) == true) {
+			$marker.fadeTo(1000, 1);
+		}
+		if ($marker.css('opacity') == 1 && determineLocationVisibility(sceneCoords) == false) {
+			$marker.fadeTo(500, 0);
+		}
 	}
 }
 function determineLocationVisibility(point) {
