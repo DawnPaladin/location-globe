@@ -10,14 +10,10 @@ function sceneSetup() {
 	loader.load('assets/globes_pack_thin26small.obm', function(obj) {
 		globe = obj;
 
-		// var mat = new THREE.MeshPhongMaterial( { color: 0x999999, specular: 0x101010 } );
-
-		console.log(globe);
-		// globe.traverse(function(child) {
-		// 	child.material = mat;
-		// })
-		// globe.children[1].material = mat;
-
+		var landMaterial = new THREE.MeshLambertMaterial( { color: 0x5BA7FD } );
+		var seaMaterial = new THREE.MeshLambertMaterial( { color: 0x101010 } );
+		globe.children[0].material = landMaterial;
+		globe.children[1].material = seaMaterial;
 		scene.add(globe);
 
 		var box = new THREE.Box3().setFromObject(globe);
@@ -26,10 +22,12 @@ function sceneSetup() {
 		populateLocations(locations);		
 	});
 
-	var light = new THREE.PointLight(0x404040); // soft white light
-	light.position.y = 5;
-	light.position.x = -5;
-	scene.add(light);
+	var upperLight = new THREE.PointLight(0xCAECF6);
+	upperLight.position.y = 5;
+	upperLight.position.x = -5;
+	scene.add(upperLight);
+	var ambientLight = new THREE.AmbientLight(0x1D2E46);
+	scene.add(ambientLight);
 	scene.background = new THREE.Color(0x72645b);
 
 	camera.position.y = 0.5;
@@ -94,7 +92,6 @@ function populateLocations() {
 		point.position.z = sceneCoords.z;
 		scene.add(point);
 		locationData.point = point;
-		console.log(point);
 		$marker.css({
 			top: screenCoords.y,
 			left: screenCoords.x,
