@@ -1,10 +1,10 @@
 var scene, camera, renderer, globe;
 function sceneSetup() {
 	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-	renderer = new THREE.WebGLRenderer({ antialias: true });
-	renderer.setSize(window.innerWidth, window.innerHeight);
-	document.body.appendChild(renderer.domElement);
+	camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+	renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+	renderer.setSize(500, 500);
+	document.getElementById('globe').appendChild(renderer.domElement);
 
 	var loader = new THREE.OBMLoader();
 	loader.load('assets/globes_pack_thin26small.obm', function(obj) {
@@ -19,7 +19,7 @@ function sceneSetup() {
 		var box = new THREE.Box3().setFromObject(globe);
 		globe.radius = box.max;
 
-		populateLocations(locations);		
+		populateFacilities(facilities);		
 	});
 
 	var upperLight = new THREE.PointLight(0xCAECF6);
@@ -28,10 +28,9 @@ function sceneSetup() {
 	scene.add(upperLight);
 	var ambientLight = new THREE.AmbientLight(0x1D2E46);
 	scene.add(ambientLight);
-	scene.background = new THREE.Color(0x72645b);
 
 	camera.position.y = 0.5;
-	camera.position.z = 3;
+	camera.position.z = 2.25;
 	camera.rotation.x = -0.2;
 }
 sceneSetup();
@@ -41,7 +40,7 @@ function animate() {
 
 	if (globe) {
 		globe.rotation.y += .005;
-		updateLocations();
+		updateFacilities();
 	}
 
 	renderer.render(scene, camera);
@@ -78,11 +77,11 @@ function sceneToScreenCoords(sceneCoords) {
 	return vector;
 }
 
-function populateLocations() {
-	for (var locationName in locations) {
+function populateFacilities() {
+	for (var locationName in facilities) {
 		var $marker = $('<img src="assets/marker.svg" alt="" class="marker" />');
 		$marker.attr('id', locationName);
-		var locationData = locations[locationName];
+		var locationData = facilities[locationName];
 		locationData.marker = $marker;
 		var sceneCoords = latLongToSceneCoords(locationData.lat, locationData.long);
 		var screenCoords = sceneToScreenCoords(sceneCoords);
@@ -97,12 +96,12 @@ function populateLocations() {
 			left: screenCoords.x,
 			opacity: determineLocationVisibility(point) ? 1 : 0,
 		});
-		$marker.appendTo('body');
+		$marker.appendTo('#globe');
 	}
 }
-function updateLocations() {
-	for (var locationName in locations) {
-		var locationData = locations[locationName];
+function updateFacilities() {
+	for (var locationName in facilities) {
+		var locationData = facilities[locationName];
 		var $marker = locationData.marker;
 		var sceneCoords = latLongToSceneCoords(locationData.lat, locationData.long);
 		var screenCoords = sceneToScreenCoords(sceneCoords);

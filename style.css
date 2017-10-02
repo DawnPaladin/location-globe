@@ -10,3 +10,34 @@ canvas {
 	margin-left: -14px;
 	margin-top: -14px;
 }
+#globe {
+	position: relative;
+}
+.flex-row {
+	position: absolute;
+	display: flex;
+	flex-direction: row;
+	height: 100%;
+	width: 100%;
+	justify-content: center;
+	align-items: center;
+	background: radial-gradient(circle at center, white 0, #C5F5FF 100%)
+}
+.news-header {
+	font-family: 'Nunito', sans-serif;
+	font-weight: 700;
+	font-size: 1.5em;
+	margin-left: 1.6em;
+}
+.news-story {
+	margin-top: 1em;
+}
+.news-story .headline {
+	font-family: 'Yanone Kaffeesatz', sans-serif;
+	font-size: 1.35em;
+	margin-bottom: .2em;
+}
+.news-story .byline {
+	font-family: 'Nunito', sans-serif;
+	letter-spacing: 1px;
+}

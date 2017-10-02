@@ -1,4 +1,4 @@
-var locations = {
+var facilities = {
 	Dallas: {
 		lat: 32.777663, 
 		long: -96.630416
