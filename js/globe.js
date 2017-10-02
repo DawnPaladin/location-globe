@@ -1,13 +1,17 @@
-var scene, camera, renderer, globe;
+var scene, camera, renderer, globe, rotWorldMatrix, rotObjectMatrix;
 function sceneSetup() {
 	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+	camera = new THREE.PerspectiveCamera(750, 1, 0.1, 100000);
 	renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 	renderer.setSize(500, 500);
 	document.getElementById('globe').appendChild(renderer.domElement);
 
 	var loader = new THREE.OBMLoader();
 	loader.load('assets/globes_pack_thin26small.obm', function(obj) {
+
+        obj.rotation.z = -20 * ( Math.PI / 180);
+
+        obj.rotation.x = 20 * ( Math.PI / 180);
 		globe = obj;
 
 		var landMaterial = new THREE.MeshLambertMaterial({ color: 0x5BA7FD });
@@ -29,17 +33,33 @@ function sceneSetup() {
 	var ambientLight = new THREE.AmbientLight(0x1D2E46);
 	scene.add(ambientLight);
 
-	camera.position.y = 0.5;
-	camera.position.z = 2.25;
+	camera.position.y = .9;
+	camera.position.z = 6.25;
 	camera.rotation.x = -0.2;
 }
 sceneSetup();
+
+function rotateAroundWorldAxis(object, axis, radians) {
+    rotWorldMatrix = new THREE.Matrix4();
+    rotWorldMatrix.makeRotationAxis(axis.normalize(), radians);
+    rotWorldMatrix.multiply(object.matrix);
+    object.matrix = rotWorldMatrix;
+    object.rotation.setFromRotationMatrix(object.matrix);
+}
+function rotateAroundObjectAxis(object, axis, radians) {
+    rotObjectMatrix = new THREE.Matrix4();
+    rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
+    object.matrix.multiply(rotObjectMatrix);
+    object.rotation.setFromRotationMatrix(object.matrix);
+}
 
 function animate() {
 	requestAnimationFrame(animate);
 
 	if (globe) {
-		globe.rotation.y += .005;
+		//globe.rotation.y += .005;
+        // rotateAroundWorldAxis(globe,new THREE.Vector3(0,1,0).normalize(),Math.PI/180);
+        rotateAroundObjectAxis(globe,new THREE.Vector3(0,1,0).normalize(),.4 * (Math.PI/180));
 		updateFacilities();
 	}
 
@@ -50,14 +70,16 @@ animate();
 function latLongToSceneCoords(lat, lon) {
 	var sceneCoords = new THREE.Vector3();
 	var radius = globe.radius.y;
-	var rotation = globe.rotation.y;
-	
 	var phi   = (90-lat)*(Math.PI/180);
-	var theta = (lon+180)*(Math.PI/180) + rotation;
+	var theta = (lon+180)*(Math.PI/180);
 
 	sceneCoords.x = -((radius) * Math.sin(phi)*Math.cos(theta));
 	sceneCoords.z = ((radius) * Math.sin(phi)*Math.sin(theta));
 	sceneCoords.y = ((radius) * Math.cos(phi));
+
+    rotObjectMatrix = new THREE.Matrix4();
+    rotObjectMatrix.makeRotationFromQuaternion(globe.quaternion);
+    sceneCoords.applyQuaternion(globe.quaternion);
 
 	return sceneCoords;
 }
