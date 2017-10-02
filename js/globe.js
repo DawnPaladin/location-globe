@@ -10,8 +10,8 @@ function sceneSetup() {
 	loader.load('assets/globes_pack_thin26small.obm', function(obj) {
 		globe = obj;
 
-		var landMaterial = new THREE.MeshLambertMaterial( { color: 0x5BA7FD } );
-		var seaMaterial = new THREE.MeshLambertMaterial( { color: 0x101010 } );
+		var landMaterial = new THREE.MeshLambertMaterial({ color: 0x5BA7FD });
+		var seaMaterial = new THREE.MeshLambertMaterial({ color: 0x101010, transparent: true, opacity: 0.25 });
 		globe.children[0].material = landMaterial;
 		globe.children[1].material = seaMaterial;
 		scene.add(globe);
