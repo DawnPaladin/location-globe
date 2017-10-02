@@ -8,11 +8,10 @@ function sceneSetup() {
 
 	var loader = new THREE.OBMLoader();
 	loader.load('assets/globes_pack_thin26small.obm', function(obj) {
-
-        obj.rotation.z = -20 * ( Math.PI / 180);
-
-        obj.rotation.x = 20 * ( Math.PI / 180);
 		globe = obj;
+
+		globe.rotation.z = -23.5 * ( Math.PI / 180);
+		globe.rotation.x = 23.5 * ( Math.PI / 180);
 
 		var landMaterial = new THREE.MeshLambertMaterial({ color: 0x5BA7FD });
 		var seaMaterial = new THREE.MeshLambertMaterial({ color: 0x101010, transparent: true, opacity: 0.25 });
