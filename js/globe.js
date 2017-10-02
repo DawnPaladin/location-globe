@@ -32,9 +32,9 @@ function sceneSetup() {
 	scene.add(light);
 	scene.background = new THREE.Color(0x72645b);
 
-	camera.position.y = 1;
+	camera.position.y = 0.5;
 	camera.position.z = 3;
-	camera.rotation.x = -0.4;
+	camera.rotation.x = -0.2;
 }
 sceneSetup();
 
@@ -42,7 +42,7 @@ function animate() {
 	requestAnimationFrame(animate);
 
 	if (globe) {
-		// globe.rotation.y += .01;
+		globe.rotation.y += .005;
 		updateLocations();
 	}
 
@@ -85,9 +85,69 @@ var locations = {
 		lat: 32.777663, 
 		long: -96.630416
 	},
-	Opp: {
-		lat: 32.777663, 
-		long: -96.630416 + 180
+	Toronto: {
+		lat: 43.797404,
+		long: -79.515387
+	},
+	SanLuisPotosi: {
+		lat: 22.0706074,
+		long: 100.8826607
+	},
+	Aurora: {
+		lat: 41.795664,
+		long: 88.267239
+	},
+	Sydney: {
+		lat: -33.839974,
+		long: 150.895261
+	},
+	Beijing: {
+		lat: 39.834400,
+		long: 116.61790
+	},
+	Tangerang: {
+		lat: -6.202439,
+		long: 106.563991
+	},
+	Osaka: {
+		lat: 34.463401,
+		long: 135.376828
+	},
+	Beirut: {
+		lat: 33.8892171,
+		long: 35.4867727
+	},
+	Auckland: {
+		lat: -36.899665,
+		long: 174.807265
+	},
+	Manila: {
+		lat: 14.604421,
+		long: 121.045185
+	},
+	Singapore: {
+		lat: 1.334590,
+		long: 103.745220
+	},
+	Meadowdale: {
+		lat: -26.152224,
+		long: 28.181646
+	},
+	Istanbul: {
+		lat: 41.0052367,
+		long: 28.8720972
+	},
+	Dublin: {
+		lat: 53.324675,
+		long: -6.364002
+	},
+	Rugby: {
+		lat: 52.394085,
+		long: -1.266980
+	},
+	Madrid: {
+		lat: 40.451832,
+		long: -3.69679
 	}
 }
 function populateLocations() {
@@ -122,17 +182,10 @@ function updateLocations() {
 		$marker.css({
 			top: screenCoords.y,
 			left: screenCoords.x,
-			// opacity: determineLocationVisibility(sceneCoords) ? 1 : 0,			
+			opacity: determineLocationVisibility(sceneCoords) ? 1 : 0,			
 		});
 	}
 }
-var raycaster = new THREE.Raycaster();
 function determineLocationVisibility(point) {
-	raycaster.setFromCamera(point.position, camera);
-	// var intersects = point.raycast(raycaster);
-	// var intersects = raycaster.intersectObject(globe);
-	// console.log(intersects);
-
-	// TODO: Determine whether a ray sent from the camera intersects the point before or after passing through the globe.
-	return true;
+	return point.z > 0.4;
 }
