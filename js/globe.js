@@ -141,6 +141,7 @@ function updateNewsStoryLines() {
 	lines.forEach(function(line) {
 		line.remove();
 	});
+	lines = [];
 	var $storyBullets = $('.news-story[data-lat]');
 	$storyBullets.each(function(index, bullet) {
 		var latlong = {
@@ -163,7 +164,8 @@ function updateNewsStoryLines() {
 			canvasCoords.x, 
 			canvasCoords.y
 		);
-		line.latlong = latlong;
+		line.opacity = determineLocationVisibility(sceneCoords) ? 1 : 0;
+
 		lines.push(line);
 	});
 	return lines;
