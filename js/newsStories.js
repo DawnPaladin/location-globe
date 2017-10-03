@@ -42,10 +42,6 @@ var newsLocations = {
 var two = new Two({ width: 500, height: 500 }).appendTo($('#globe')[0]);
 $(two.renderer.domElement).addClass('two');
 
-var circle = two.makeCircle(250, 250, 5);
-circle.fill = '#FF8000';
-two.update();
-
 newsStories.forEach(function populateNewsStories(story, index) {
 	var location = newsLocations[story.locationKey];
 	story.coords = location.coords;

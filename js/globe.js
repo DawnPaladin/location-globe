@@ -1,4 +1,4 @@
-var scene, camera, renderer, globe, rotWorldMatrix, rotObjectMatrix, lines;
+var scene, camera, renderer, globe, rotWorldMatrix, rotObjectMatrix, lines = [];
 function sceneSetup() {
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(750, 1, 0.1, 100000);
@@ -10,8 +10,8 @@ function sceneSetup() {
 	loader.load('assets/globes_pack_thin26small.obm', function(obj) {
 		globe = obj;
 
-		// globe.rotation.z = -23.5 * ( Math.PI / 180);
-		// globe.rotation.x = 23.5 * ( Math.PI / 180);
+		globe.rotation.z = -23.5 * ( Math.PI / 180);
+		globe.rotation.x = 23.5 * ( Math.PI / 180);
 
 		var landMaterial = new THREE.MeshLambertMaterial({ color: 0x5BA7FD });
 		var seaMaterial = new THREE.MeshLambertMaterial({ color: 0x101010, transparent: true, opacity: 0.25 });
@@ -23,7 +23,7 @@ function sceneSetup() {
 		globe.radius = box.max;
 
 		populateFacilities(facilities);
-		lines = createNewsStoryLines();
+		// lines = createNewsStoryLines();
 	});
 
 	var upperLight = new THREE.PointLight(0xCAECF6);
@@ -57,9 +57,9 @@ function animate() {
 	requestAnimationFrame(animate);
 
 	if (globe) {
-		// rotateAroundObjectAxis(globe,new THREE.Vector3(0,1,0).normalize(),.4 * (Math.PI/180));
+		rotateAroundObjectAxis(globe,new THREE.Vector3(0,1,0).normalize(),.4 * (Math.PI/180));
 		updateFacilities();
-		// updateNewsStoryLines();
+		updateNewsStoryLines();
 	}
 
 	renderer.render(scene, camera);
@@ -67,6 +67,8 @@ function animate() {
 animate();
 
 function latLongToSceneCoords(lat, lon) {
+	lat = Number(lat);
+	lon = Number(lon);
 	var sceneCoords = new THREE.Vector3();
 	var radius = globe.radius.y;
 	var phi   = (90-lat)*(Math.PI/180);
@@ -96,11 +98,6 @@ function sceneToCanvasCoords(sceneCoords) {
 
 	return vector;
 }
-function axialTiltCanvasCoords(canvasCoords) {
-	rotObjectMatrix = new THREE.Matrix4();
-	rotObjectMatrix.makeRotationFromQuaternion(globe.quaternion);
-	canvasCoords.applyQuaternion(globe.quaternion);
-}
 
 function populateFacilities() {
 	for (var locationName in facilities) {
@@ -110,7 +107,6 @@ function populateFacilities() {
 		locationData.marker = $marker;
 		var sceneCoords = latLongToSceneCoords(locationData.lat, locationData.long);
 		var canvasCoords = sceneToCanvasCoords(sceneCoords);
-		console.log("marker", locationData, sceneCoords, canvasCoords);
 		$marker.css({
 			top: canvasCoords.y,
 			left: canvasCoords.x,
@@ -142,8 +138,10 @@ function updateFacilities() {
 function determineLocationVisibility(point) {
 	return point.z > 0.4;
 }
-function createNewsStoryLines() {
-	var lines = [];
+function updateNewsStoryLines() {
+	lines.forEach(function(line) {
+		line.remove();
+	});
 	var $storyBullets = $('.news-story[data-lat]');
 	$storyBullets.each(function(index, bullet) {
 		var latlong = {
@@ -152,41 +150,22 @@ function createNewsStoryLines() {
 		}
 		var sceneCoords = latLongToSceneCoords(latlong.lat, latlong.long);
 		var canvasCoords = sceneToCanvasCoords(sceneCoords);
-		console.log("line", latlong, sceneCoords, canvasCoords);
-		// axialTiltCanvasCoords(canvasCoords);
 
 		var canvasLeftOffset = $('#globe').offset().left;
 		var canvasTopOffset = $('#globe').offset().top;
 		var bulletCoords = {
 			x: $(bullet).offset().left - canvasLeftOffset, 
-			y: $(bullet).offset().top - canvasTopOffset
+			y: $(bullet).offset().top - canvasTopOffset + 15
 		};
-
-		console.log(bulletCoords);
 
 		var line = two.makeLine(
 			bulletCoords.x,
 			bulletCoords.y, 
-			canvasCoords.x  - canvasLeftOffset, 
+			canvasCoords.x, 
 			canvasCoords.y
 		);
 		line.latlong = latlong;
 		lines.push(line);
 	});
 	return lines;
-}
-function updateNewsStoryLines() {
-	lines.forEach(function(line) {
-		var sceneCoords = latLongToSceneCoords(line.latlong.lat, line.latlong.long);
-		var screenCoords = sceneToCanvasCoords(sceneCoords);
-
-		// var canvasLeftOffset = $('#globe').offset().left;
-		var canvasLeftOffset = 400;
-		var canvasTopOffset = $('#globe').offset().top;
-
-		
-
-		line._vertices[1].x = screenCoords.x - canvasLeftOffset;
-		line._vertices[1].y = screenCoords.y;
-	});
 }
