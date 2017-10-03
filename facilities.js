@@ -9,7 +9,7 @@ var facilities = {
 	},
 	SanLuisPotosi: {
 		lat: 22.0706074,
-		long: 100.8826607
+		long: -100.8826607
 	},
 	Aurora: {
 		lat: 41.795664,

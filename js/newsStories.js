@@ -39,11 +39,43 @@ var newsLocations = {
 	}
 };
 
-newsStories.forEach(function(story) {
+var two = new Two({ width: 500, height: 500 }).appendTo($('#globe')[0]);
+$(two.renderer.domElement).addClass('two');
+
+var circle = two.makeCircle(250, 250, 5);
+circle.fill = '#FF8000';
+two.update();
+
+newsStories.forEach(function populateNewsStories(story, index) {
 	var location = newsLocations[story.locationKey];
-	$('<li class="news-story">')
+	story.coords = location.coords;
+	var $bullet = $('<li class="news-story">')
+		.attr('id', 'story-' + index)
 		.append("<div class='headline'>" + story.headline + "</div>")
 		.append("<div class='byline'>" + story.date + " - " + location.mapText.toUpperCase() + "</div>")
 		.appendTo('#news-list')
-	
+	if (story.hasOwnProperty('coords') && story.coords) {
+		$bullet
+			.attr('data-lat', story.coords.lat)
+			.attr('data-long', story.coords.long)
+	}
 });
+
+function testTwoDrawing() {
+	// two has convenience methods to create shapes.
+	var circle = two.makeCircle(72, 100, 50);
+	var rect = two.makeRectangle(213, 100, 100, 100);
+
+	// The object returned has many stylable properties:
+	circle.fill = '#FF8000';
+	circle.stroke = 'orangered'; // Accepts all valid css color
+	circle.linewidth = 5;
+
+	rect.fill = 'rgb(0, 200, 255)';
+	rect.opacity = 0.75;
+	rect.noStroke();
+
+	// Don't forget to tell two to render everything
+	// to the screen
+	two.update();
+}

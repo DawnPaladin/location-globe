@@ -41,3 +41,6 @@ canvas {
 	font-family: 'Nunito', sans-serif;
 	letter-spacing: 1px;
 }
+.two {
+	position: absolute;
+}

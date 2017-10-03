@@ -1,4 +1,4 @@
-var scene, camera, renderer, globe, rotWorldMatrix, rotObjectMatrix;
+var scene, camera, renderer, globe, rotWorldMatrix, rotObjectMatrix, lines;
 function sceneSetup() {
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(750, 1, 0.1, 100000);
@@ -10,8 +10,8 @@ function sceneSetup() {
 	loader.load('assets/globes_pack_thin26small.obm', function(obj) {
 		globe = obj;
 
-		globe.rotation.z = -23.5 * ( Math.PI / 180);
-		globe.rotation.x = 23.5 * ( Math.PI / 180);
+		// globe.rotation.z = -23.5 * ( Math.PI / 180);
+		// globe.rotation.x = 23.5 * ( Math.PI / 180);
 
 		var landMaterial = new THREE.MeshLambertMaterial({ color: 0x5BA7FD });
 		var seaMaterial = new THREE.MeshLambertMaterial({ color: 0x101010, transparent: true, opacity: 0.25 });
@@ -22,7 +22,8 @@ function sceneSetup() {
 		var box = new THREE.Box3().setFromObject(globe);
 		globe.radius = box.max;
 
-		populateFacilities(facilities);		
+		populateFacilities(facilities);
+		lines = createNewsStoryLines();
 	});
 
 	var upperLight = new THREE.PointLight(0xCAECF6);
@@ -56,10 +57,9 @@ function animate() {
 	requestAnimationFrame(animate);
 
 	if (globe) {
-		//globe.rotation.y += .005;
-        // rotateAroundWorldAxis(globe,new THREE.Vector3(0,1,0).normalize(),Math.PI/180);
-        rotateAroundObjectAxis(globe,new THREE.Vector3(0,1,0).normalize(),.4 * (Math.PI/180));
+		// rotateAroundObjectAxis(globe,new THREE.Vector3(0,1,0).normalize(),.4 * (Math.PI/180));
 		updateFacilities();
+		// updateNewsStoryLines();
 	}
 
 	renderer.render(scene, camera);
@@ -76,14 +76,13 @@ function latLongToSceneCoords(lat, lon) {
 	sceneCoords.z = ((radius) * Math.sin(phi)*Math.sin(theta));
 	sceneCoords.y = ((radius) * Math.cos(phi));
 
-    rotObjectMatrix = new THREE.Matrix4();
-    rotObjectMatrix.makeRotationFromQuaternion(globe.quaternion);
-    sceneCoords.applyQuaternion(globe.quaternion);
+	rotObjectMatrix = new THREE.Matrix4();
+	rotObjectMatrix.makeRotationFromQuaternion(globe.quaternion);
+	sceneCoords.applyQuaternion(globe.quaternion);
 
 	return sceneCoords;
 }
-
-function sceneToScreenCoords(sceneCoords) {
+function sceneToCanvasCoords(sceneCoords) {
 	// adapted from https://stackoverflow.com/q/10473852/1805453
 	var vector = new THREE.Vector3();
 	var canvas = renderer.domElement;
@@ -97,6 +96,11 @@ function sceneToScreenCoords(sceneCoords) {
 
 	return vector;
 }
+function axialTiltCanvasCoords(canvasCoords) {
+	rotObjectMatrix = new THREE.Matrix4();
+	rotObjectMatrix.makeRotationFromQuaternion(globe.quaternion);
+	canvasCoords.applyQuaternion(globe.quaternion);
+}
 
 function populateFacilities() {
 	for (var locationName in facilities) {
@@ -105,17 +109,12 @@ function populateFacilities() {
 		var locationData = facilities[locationName];
 		locationData.marker = $marker;
 		var sceneCoords = latLongToSceneCoords(locationData.lat, locationData.long);
-		var screenCoords = sceneToScreenCoords(sceneCoords);
-		var point = new THREE.Points();
-		point.position.x = sceneCoords.x;
-		point.position.y = sceneCoords.y;
-		point.position.z = sceneCoords.z;
-		scene.add(point);
-		locationData.point = point;
+		var canvasCoords = sceneToCanvasCoords(sceneCoords);
+		console.log("marker", locationData, sceneCoords, canvasCoords);
 		$marker.css({
-			top: screenCoords.y,
-			left: screenCoords.x,
-			opacity: determineLocationVisibility(point) ? 1 : 0,
+			top: canvasCoords.y,
+			left: canvasCoords.x,
+			opacity: determineLocationVisibility(canvasCoords) ? 1 : 0,
 		});
 		$marker.appendTo('#globe');
 	}
@@ -125,10 +124,10 @@ function updateFacilities() {
 		var locationData = facilities[locationName];
 		var $marker = locationData.marker;
 		var sceneCoords = latLongToSceneCoords(locationData.lat, locationData.long);
-		var screenCoords = sceneToScreenCoords(sceneCoords);
+		var canvasCoords = sceneToCanvasCoords(sceneCoords);
 		$marker.css({
-			top: screenCoords.y,
-			left: screenCoords.x,
+			top: canvasCoords.y,
+			left: canvasCoords.x,
 		});
 
 		if ($marker.css('opacity') == 0 && determineLocationVisibility(sceneCoords) == true) {
@@ -138,7 +137,56 @@ function updateFacilities() {
 			$marker.fadeTo(500, 0);
 		}
 	}
+	two.update();
 }
 function determineLocationVisibility(point) {
 	return point.z > 0.4;
+}
+function createNewsStoryLines() {
+	var lines = [];
+	var $storyBullets = $('.news-story[data-lat]');
+	$storyBullets.each(function(index, bullet) {
+		var latlong = {
+			lat: $(bullet).attr('data-lat'),
+			long: $(bullet).attr('data-long')
+		}
+		var sceneCoords = latLongToSceneCoords(latlong.lat, latlong.long);
+		var canvasCoords = sceneToCanvasCoords(sceneCoords);
+		console.log("line", latlong, sceneCoords, canvasCoords);
+		// axialTiltCanvasCoords(canvasCoords);
+
+		var canvasLeftOffset = $('#globe').offset().left;
+		var canvasTopOffset = $('#globe').offset().top;
+		var bulletCoords = {
+			x: $(bullet).offset().left - canvasLeftOffset, 
+			y: $(bullet).offset().top - canvasTopOffset
+		};
+
+		console.log(bulletCoords);
+
+		var line = two.makeLine(
+			bulletCoords.x,
+			bulletCoords.y, 
+			canvasCoords.x  - canvasLeftOffset, 
+			canvasCoords.y
+		);
+		line.latlong = latlong;
+		lines.push(line);
+	});
+	return lines;
+}
+function updateNewsStoryLines() {
+	lines.forEach(function(line) {
+		var sceneCoords = latLongToSceneCoords(line.latlong.lat, line.latlong.long);
+		var screenCoords = sceneToCanvasCoords(sceneCoords);
+
+		// var canvasLeftOffset = $('#globe').offset().left;
+		var canvasLeftOffset = 400;
+		var canvasTopOffset = $('#globe').offset().top;
+
+		
+
+		line._vertices[1].x = screenCoords.x - canvasLeftOffset;
+		line._vertices[1].y = screenCoords.y;
+	});
 }
