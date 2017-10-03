@@ -1,4 +1,4 @@
-var scene, camera, renderer, globe, rotWorldMatrix, rotObjectMatrix, lines = [];
+var scene, camera, renderer, globe, lines = [];
 function sceneSetup() {
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(750, 1, 0.1, 100000);
@@ -19,11 +19,10 @@ function sceneSetup() {
 		globe.children[1].material = seaMaterial;
 		scene.add(globe);
 
-		var box = new THREE.Box3().setFromObject(globe);
-		globe.radius = box.max;
+		var boundingBox = new THREE.Box3().setFromObject(globe);
+		globe.radius = boundingBox.max;
 
 		populateFacilities(facilities);
-		// lines = createNewsStoryLines();
 	});
 
 	var upperLight = new THREE.PointLight(0xCAECF6);
@@ -40,14 +39,14 @@ function sceneSetup() {
 sceneSetup();
 
 function rotateAroundWorldAxis(object, axis, radians) {
-    rotWorldMatrix = new THREE.Matrix4();
+    var rotWorldMatrix = new THREE.Matrix4();
     rotWorldMatrix.makeRotationAxis(axis.normalize(), radians);
     rotWorldMatrix.multiply(object.matrix);
     object.matrix = rotWorldMatrix;
     object.rotation.setFromRotationMatrix(object.matrix);
 }
 function rotateAroundObjectAxis(object, axis, radians) {
-    rotObjectMatrix = new THREE.Matrix4();
+    var rotObjectMatrix = new THREE.Matrix4();
     rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
     object.matrix.multiply(rotObjectMatrix);
     object.rotation.setFromRotationMatrix(object.matrix);
@@ -57,7 +56,7 @@ function animate() {
 	requestAnimationFrame(animate);
 
 	if (globe) {
-		rotateAroundObjectAxis(globe,new THREE.Vector3(0,1,0).normalize(),.4 * (Math.PI/180));
+		rotateAroundObjectAxis(globe, new THREE.Vector3(0,1,0).normalize(),.4 * (Math.PI/180));
 		updateFacilities();
 		updateNewsStoryLines();
 	}
@@ -71,7 +70,7 @@ function latLongToSceneCoords(lat, lon) {
 	lon = Number(lon);
 	var sceneCoords = new THREE.Vector3();
 	var radius = globe.radius.y;
-	var phi   = (90-lat)*(Math.PI/180);
+	var phi = (90-lat)*(Math.PI/180);
 	var theta = (lon+180)*(Math.PI/180);
 
 	sceneCoords.x = -((radius) * Math.sin(phi)*Math.cos(theta));
