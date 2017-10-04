@@ -39,7 +39,7 @@ var newsLocations = {
 	}
 };
 
-var two = new Two({ width: 500, height: 500 }).appendTo($('#globe')[0]);
+var two = new Two({ width: canvasWidth, height: canvasHeight }).appendTo($('#globe')[0]);
 $(two.renderer.domElement).addClass('two');
 
 newsStories.forEach(function populateNewsStories(story, index) {
