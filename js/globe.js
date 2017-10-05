@@ -161,102 +161,140 @@ function updateNewsStoryLines() {
         //directLine(lines,canvasCoords,bulletCoords,sceneCoords,index);
         //fancyLineFromBulletThenUpThenPoint(lines,canvasCoords,bulletCoords,sceneCoords,index);
         fancyLineFromBulletThenUp(lines,canvasCoords,bulletCoords,sceneCoords,index);
+        //fancyCurveFromBulletThenUp(lines,canvasCoords,bulletCoords,sceneCoords,index);
+        drawDotAtLocation(lines,canvasCoords,sceneCoords);
 	});
 	return lines;
 }
-function fancyLineFromBulletThenUp(lines, globePoint,bulletPoint,sceneCoords,bulletIndex)
+function drawDotAtLocation(lines,canvasCoords,sceneCords)
 {
-    var pixelsFromBullet = 70;
-    var staticHeightAdjustmentToHitBullet = -5;
-    var lengthIncriment = 20;
-    var opacity = determineLocationVisibility(sceneCoords) ? .7 : 0;
-    var strokeColor = "rgb(200,200, 50)";
-    var linewidth = 3;
+    if(!determineLocationVisibility(sceneCords)) { return; }
+    var circle = two.makeCircle(canvasCoords.x,canvasCoords.y, 7);
+    circle.fill =  "rgb(240,240, 50)";
+    circle.stroke = "rgb(255,255, 250)";
+    circle.linewidth = 1.2;
+    circle.opacity - .7;
+    lines.push(circle);
 
-    //start at the bullet point, move out some pixels to the right, then go up in progression
-	var line = two.makeLine(
-        bulletPoint.x,
-        bulletPoint.y+staticHeightAdjustmentToHitBullet,
-        globePoint.x,
-        bulletPoint.y+staticHeightAdjustmentToHitBullet
-    );
-    line.linewidth = linewidth;
-    line.stroke = strokeColor;
-    line.opacity = opacity;
-    lines.push(line);
+}
+function stylizedLine(lines, x1,y1,x2,y2,sceneCords)
+{
+	if(determineLocationVisibility(sceneCords)) {
+        var strokeColor = "rgb(220,220, 50)";
+		var scale  = 1.8;
+        var line = two.makeLine(x1,y1,x2,y2);
+        line.linewidth = 3*scale;
+        line.stroke = strokeColor;
+        line.opacity = .7;
+        lines.push(line);
 
-    //now go straight across to the actual point
-    var line = two.makeLine(
-        globePoint.x,
-        bulletPoint.y+staticHeightAdjustmentToHitBullet,
-        globePoint.x,
-        globePoint.y
-    );
-    line.linewidth = linewidth;
-    line.stroke = strokeColor;
-    line.opacity = opacity;
-    lines.push(line);
+        var line = two.makeLine(x1,y1,x2,y2);
+        line.linewidth = 2*scale;
+        line.stroke = strokeColor;
+        line.opacity = .8;
+        lines.push(line);
 
+        var line = two.makeLine(x1,y1,x2,y2);
+        line.linewidth = 1*scale;
+        line.stroke = "rgb(255,255, 250)";
+        line.opacity = 1.;
+        lines.push(line);
+    }
 
 }
 
-function fancyLineFromBulletThenUpThenPoint(lines, globePoint,bulletPoint,sceneCoords,bulletIndex)
+function fancyCurveFromBulletThenUp(lines, globePoint,bulletPoint,sceneCords,bulletIndex)
 {
-	//start at the bullet point, move out some pixels to the right, then go up in progression
+    if(!determineLocationVisibility(sceneCords)) { return; }
+    var staticHeightAdjustmentToHitBullet = -5;
+    var curve = two.makeCurve(
+        bulletPoint.x,
+        bulletPoint.y+staticHeightAdjustmentToHitBullet,
+
+        //globePoint.x,
+        //bulletPoint.y+staticHeightAdjustmentToHitBullet,
+        globePoint.x,
+        bulletPoint.y+staticHeightAdjustmentToHitBullet,
+        globePoint.x,
+        globePoint.y,
+		true
+	);
+    var strokeColor = "rgb(220,220, 50)";
+    curve.linewidth = 3;
+    curve.stroke = strokeColor;
+    curve.opacity = .9;
+    curve.noFill();
+	lines.push(curve);
+
+}
+function fancyLineFromBulletThenUp(lines, globePoint,bulletPoint,sceneCords,bulletIndex)
+{
+    var staticHeightAdjustmentToHitBullet = -5;
+
+    //start at the bullet point, move out al the way to the right,
+    stylizedLine(lines,
+        bulletPoint.x,
+        bulletPoint.y+staticHeightAdjustmentToHitBullet,
+        globePoint.x,
+        bulletPoint.y+staticHeightAdjustmentToHitBullet,
+        sceneCords
+    );
+    //now go straight across to the actual point
+    stylizedLine(lines,
+        globePoint.x,
+        bulletPoint.y+staticHeightAdjustmentToHitBullet,
+        globePoint.x,
+        globePoint.y,
+        sceneCords
+	);
+
+}
+
+function fancyLineFromBulletThenUpThenPoint(lines, globePoint,bulletPoint,sceneCords,bulletIndex)
+{
 	var pixelsFromBullet = 70;
 	var staticHeightAdjustmentToHitBullet = -5;
 	var lengthIncriment = 20;
-	var opacity = determineLocationVisibility(sceneCoords) ? .7 : 0;
-	var strokeColor = "rgb(200,200, 50)";
-	var linewidth = 3;
 
-    var line = two.makeLine(
+    //start at the bullet point, move out some pixels to the right, then go up in progression
+    stylizedLine(
+		lines,
     	bulletPoint.x,
     	bulletPoint.y+staticHeightAdjustmentToHitBullet,
 		bulletPoint.x-pixelsFromBullet-(bulletIndex *lengthIncriment ),
-        bulletPoint.y+staticHeightAdjustmentToHitBullet
+        bulletPoint.y+staticHeightAdjustmentToHitBullet,
+        sceneCords
 	);
-    line.linewidth = linewidth;
-    line.stroke = strokeColor;
-    line.opacity = opacity;
-    lines.push(line);
 
     //now make a straight line uip to go to the position of the globe point
-    var line = two.makeLine(
+    stylizedLine(
+    	lines,
         bulletPoint.x-pixelsFromBullet-(bulletIndex *lengthIncriment ),
         bulletPoint.y+staticHeightAdjustmentToHitBullet,
         bulletPoint.x-pixelsFromBullet-(bulletIndex *lengthIncriment ),
-        globePoint.y
+        globePoint.y,
+		sceneCords
     );
-    line.linewidth = linewidth;
-    line.stroke = strokeColor;
-    line.opacity = opacity;
-    lines.push(line);
-
 
     //now go straight across to the actual point
-    var line = two.makeLine(
+    stylizedLine(
+    	lines,
         bulletPoint.x-pixelsFromBullet-(bulletIndex *lengthIncriment ),
         globePoint.y,
         globePoint.x,
-        globePoint.y
+        globePoint.y,
+        sceneCords
     );
-    line.linewidth = linewidth;
-    line.stroke = strokeColor;
-    line.opacity = opacity;
-    lines.push(line);
-
 
 }
-function directLine(lines, globePoint,bulletPoint,sceneCoords,bulletIndex)
+function directLine(lines, globePoint,bulletPoint,sceneCords,bulletIndex)
 {
-    var line = two.makeLine(
+    stylizedLine(
+    	lines,
         bulletPoint.x,
         bulletPoint.y,
         globePoint.x,
-        globePoint.y
+        globePoint.y,
+        sceneCords
     );
-    line.opacity = determineLocationVisibility(sceneCoords) ? .5 : 0;
-    line.linewidth = 2;
-    lines.push(line);
 }
