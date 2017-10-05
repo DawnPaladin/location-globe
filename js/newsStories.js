@@ -15,6 +15,26 @@ var newsStories = [
 		headline: "H&K Mexico Celebrate 25 Years",
 		date: "April 12, 2017",
 		locationKey: "SanLuisPotosi"
+	}, {
+		headline: "H&K International Completes Purchase of LAUK Lighting Limited",
+		date: "April 12, 2017",
+		locationKey: "Rugby"
+	}, {
+		headline: "30 Years In Rugby",
+		date: "May 31, 2016",
+		locationKey: "Rugby"
+	}, {
+		headline: "H&K Recognized for 2015 Global Supplier of the Year",
+		date: "April 27, 2016",
+		locationKey: "Orlando"
+	}, {
+		headline: "H&K Japan Receives Irish Ambassador Visit",
+		date: "December 22, 2015",
+		locationKey: "Osaka"
+	}, {
+		headline: "H&K Australia Proudly Awarded Annual 'System First' Award",
+		date: "December 4, 2015",
+		locationKey: "Sydney"
 	}
 ];
 var newsLocations = {
@@ -36,6 +56,25 @@ var newsLocations = {
 	SanLuisPotosi: {
 		mapText: "San Luis Potosi, Mexico",
 		coords: facilities.SanLuisPotosi,
+	},
+	Rugby: {
+		mapText: "Rugby, UK",
+		coords: facilities.Rugby,
+	},
+	Orlando: {
+		mapText: "Orlando, FL",
+		coords: {
+			lat: 28.430488,
+			long: -81.461539
+		}
+	},
+	Osaka: {
+		mapText: "Osaka, Japan",
+		coords: facilities.Osaka,
+	},
+	Sydney: {
+		mapText: "Sydney, Australia",
+		coords: facilities.Sydney
 	}
 };
 
@@ -44,6 +83,7 @@ $(two.renderer.domElement).addClass('two');
 
 newsStories.forEach(function populateNewsStories(story, index) {
 	var location = newsLocations[story.locationKey];
+	if (!location) throw new Error("locationKey doesn't match a newsLocation");
 	story.coords = location.coords;
 	var $bullet = $('<li class="news-story">')
 		.attr('id', 'story-' + index)
