@@ -1,5 +1,6 @@
 var scene, camera, renderer, globe, lines = [];
-var spinAmbiently = true;
+var spinAmbiently = false;
+
 function sceneSetup() {
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(750, canvasWidth/canvasHeight, 0.1, 100000);
@@ -11,9 +12,10 @@ function sceneSetup() {
 	loader.load(pathPrefix+'assets/globes_pack_thin26small.obm', function(obj) {
 		globe = obj;
 
-		globe.rotation.z = -23.5 * ( Math.PI / 180);
-		globe.rotation.x = 23.5 * ( Math.PI / 180);
-
+		// axial tilt
+		globe.rotation.z = degreesToRadians(-23.5);
+		globe.rotation.x = degreesToRadians(23.5);
+		
 		var landMaterial = new THREE.MeshLambertMaterial({ color: 0x5BA7FD });
 		var seaMaterial = new THREE.MeshLambertMaterial({ color: 0x101010, transparent: true, opacity: 0.25 });
 		globe.children[0].material = landMaterial;
@@ -23,8 +25,7 @@ function sceneSetup() {
 		var boundingBox = new THREE.Box3().setFromObject(globe);
 		globe.radius = boundingBox.max;
 		globe.axis = new THREE.Vector3(0,1,0).normalize();
-
-		goto();
+		globe.currentRotation = { degrees: -90, radians: degreesToRadians(-90) };
 
 		populateFacilities(facilities);
 	});
@@ -36,17 +37,33 @@ function sceneSetup() {
 	var ambientLight = new THREE.AmbientLight(0x1D2E46);
 	scene.add(ambientLight);
 
-	camera.position.y = .9;
 	camera.position.z = 6.25;
-	camera.rotation.x = -0.2;
 }
 sceneSetup();
 
 function rotateGlobe(radians) {
     var rotObjectMatrix = new THREE.Matrix4();
-    rotObjectMatrix.makeRotationAxis(globe.axis.normalize(), radians);
+    rotObjectMatrix.makeRotationAxis(globe.axis.normalize(), -radians);
     globe.matrix.multiply(rotObjectMatrix);
-    globe.rotation.setFromRotationMatrix(globe.matrix);
+	 globe.rotation.setFromRotationMatrix(globe.matrix);
+	 globe.currentRotation.radians += radians;
+	 globe.currentRotation.degrees += radiansToDegrees(radians);
+}
+
+function goto(lat, long) { // lat is currently unused
+	var initialLong = globe.currentRotation.degrees;
+	var rotationAmount = long - initialLong;
+	rotateGlobe(degreesToRadians(rotationAmount));
+}
+function gotoFacility(facilityKey) {
+	goto(facilities[facilityKey].lat,facilities[facilityKey].long);
+}
+
+function degreesToRadians(degrees) {
+	return degrees * (Math.PI/180);
+}
+function radiansToDegrees(radians) {
+	return radians / (Math.PI/180);
 }
 
 function animate() {
@@ -54,7 +71,7 @@ function animate() {
 
 	if (globe) {
 		if (spinAmbiently) 
-			rotateGlobe(.1 * (Math.PI/180));
+			rotateGlobe(degreesToRadians(-.5));
 		updateFacilities();
 		updateNewsStoryLines();
 	}
@@ -62,12 +79,6 @@ function animate() {
 	renderer.render(scene, camera);
 }
 animate();
-
-function goto(lat, long) {
-	var initialPosition = globe.matrix;
-	console.log(globe.matrix);
-	// rotateGlobe(globe, globe.axis, )
-}
 
 function latLongToSceneCoords(lat, long) {
 	lat = Number(lat);
