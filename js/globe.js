@@ -60,24 +60,26 @@ function gotoFacility(facilityKey) {
 }
 function moveTo(lat, long) { // lat is currently unused
 	var animationTime = 1000;
-	var steps = 100;
-	var animationInterval = animationTime / steps;
+	var numSteps = 100;
 
 	var initialLong = globe.currentRotation.degrees;
 	var totalRotationAmount = long - initialLong;
-	var rotationPerTick = totalRotationAmount / steps;
-
-	var counter = 0;
-	var interval = setInterval(function() {
+	var rotationPerTick = totalRotationAmount / numSteps;
+	babySteps(function() {
 		rotateGlobe(degreesToRadians(rotationPerTick));
-		counter++;
-		if (counter == steps) {
-			clearInterval(interval);
-		}
-	}, animationInterval);
+	}, animationTime, numSteps);
 }
 function moveToFacility(facilityKey) {
 	moveTo(facilities[facilityKey].lat,facilities[facilityKey].long);
+}
+function babySteps(callback, animationTime, numSteps) { // run the callback numSteps times over animationTime
+	var animationInterval = animationTime / numSteps;
+	var counter = 0;
+	var interval = setInterval(function() {
+		callback();
+		counter++;
+		if (counter == numSteps) clearInterval(interval);
+	}, animationInterval);
 }
 
 function degreesToRadians(degrees) {
