@@ -19,22 +19,22 @@ var newsStories = [
 		headline: "H&K International Completes Purchase of LAUK Lighting Limited",
 		date: "April 12, 2017",
 		locationKey: "Rugby"
-	}, {
-		headline: "30 Years In Rugby",
-		date: "May 31, 2016",
-		locationKey: "Rugby"
-	}, {
-		headline: "H&K Recognized for 2015 Global Supplier of the Year",
-		date: "April 27, 2016",
-		locationKey: "Orlando"
-	}, {
-		headline: "H&K Japan Receives Irish Ambassador Visit",
-		date: "December 22, 2015",
-		locationKey: "Osaka"
-	}, {
-		headline: "H&K Australia Proudly Awarded Annual 'System First' Award",
-		date: "December 4, 2015",
-		locationKey: "Sydney"
+	// }, {
+	// 	headline: "30 Years In Rugby",
+	// 	date: "May 31, 2016",
+	// 	locationKey: "Rugby"
+	// }, {
+	// 	headline: "H&K Recognized for 2015 Global Supplier of the Year",
+	// 	date: "April 27, 2016",
+	// 	locationKey: "Orlando"
+	// }, {
+	// 	headline: "H&K Japan Receives Irish Ambassador Visit",
+	// 	date: "December 22, 2015",
+	// 	locationKey: "Osaka"
+	// }, {
+	// 	headline: "H&K Australia Proudly Awarded Annual 'System First' Award",
+	// 	date: "December 4, 2015",
+	// 	locationKey: "Sydney"
 	}
 ];
 var newsLocations = {
