@@ -7,7 +7,7 @@ function sceneSetup() {
 	document.getElementById('globe').appendChild(renderer.domElement);
 
 	var loader = new THREE.OBMLoader();
-	loader.load(pathPrefix+'/assets/globes_pack_thin26small.obm', function(obj) {
+	loader.load(pathPrefix+'assets/globes_pack_thin26small.obm', function(obj) {
 		globe = obj;
 
 		globe.rotation.z = -23.5 * ( Math.PI / 180);
@@ -100,7 +100,7 @@ function sceneToCanvasCoords(sceneCoords) {
 
 function populateFacilities() {
 	for (var locationName in facilities) {
-		var $marker = $('<img src="'+pathPrefix+'/assets/marker.svg" alt="" class="marker" />');
+		var $marker = $('<img src="'+pathPrefix+'assets/marker.svg" alt="" class="marker" />');
 		$marker.attr('id', locationName);
 		var locationData = facilities[locationName];
 		locationData.marker = $marker;
