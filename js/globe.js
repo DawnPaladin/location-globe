@@ -158,15 +158,105 @@ function updateNewsStoryLines() {
 			y: $(bullet).offset().top - canvasTopOffset + 15
 		};
 
-		var line = two.makeLine(
-			bulletCoords.x,
-			bulletCoords.y, 
-			canvasCoords.x, 
-			canvasCoords.y
-		);
-		line.opacity = determineLocationVisibility(sceneCoords) ? 1 : 0;
-
-		lines.push(line);
+        //directLine(lines,canvasCoords,bulletCoords,sceneCoords,index);
+        //fancyLineFromBulletThenUpThenPoint(lines,canvasCoords,bulletCoords,sceneCoords,index);
+        fancyLineFromBulletThenUp(lines,canvasCoords,bulletCoords,sceneCoords,index);
 	});
 	return lines;
+}
+function fancyLineFromBulletThenUp(lines, globePoint,bulletPoint,sceneCoords,bulletIndex)
+{
+    var pixelsFromBullet = 70;
+    var staticHeightAdjustmentToHitBullet = -5;
+    var lengthIncriment = 20;
+    var opacity = determineLocationVisibility(sceneCoords) ? .7 : 0;
+    var strokeColor = "rgb(200,200, 50)";
+    var linewidth = 3;
+
+    //start at the bullet point, move out some pixels to the right, then go up in progression
+	var line = two.makeLine(
+        bulletPoint.x,
+        bulletPoint.y+staticHeightAdjustmentToHitBullet,
+        globePoint.x,
+        bulletPoint.y+staticHeightAdjustmentToHitBullet
+    );
+    line.linewidth = linewidth;
+    line.stroke = strokeColor;
+    line.opacity = opacity;
+    lines.push(line);
+
+    //now go straight across to the actual point
+    var line = two.makeLine(
+        globePoint.x,
+        bulletPoint.y+staticHeightAdjustmentToHitBullet,
+        globePoint.x,
+        globePoint.y
+    );
+    line.linewidth = linewidth;
+    line.stroke = strokeColor;
+    line.opacity = opacity;
+    lines.push(line);
+
+
+}
+
+function fancyLineFromBulletThenUpThenPoint(lines, globePoint,bulletPoint,sceneCoords,bulletIndex)
+{
+	//start at the bullet point, move out some pixels to the right, then go up in progression
+	var pixelsFromBullet = 70;
+	var staticHeightAdjustmentToHitBullet = -5;
+	var lengthIncriment = 20;
+	var opacity = determineLocationVisibility(sceneCoords) ? .7 : 0;
+	var strokeColor = "rgb(200,200, 50)";
+	var linewidth = 3;
+
+    var line = two.makeLine(
+    	bulletPoint.x,
+    	bulletPoint.y+staticHeightAdjustmentToHitBullet,
+		bulletPoint.x-pixelsFromBullet-(bulletIndex *lengthIncriment ),
+        bulletPoint.y+staticHeightAdjustmentToHitBullet
+	);
+    line.linewidth = linewidth;
+    line.stroke = strokeColor;
+    line.opacity = opacity;
+    lines.push(line);
+
+    //now make a straight line uip to go to the position of the globe point
+    var line = two.makeLine(
+        bulletPoint.x-pixelsFromBullet-(bulletIndex *lengthIncriment ),
+        bulletPoint.y+staticHeightAdjustmentToHitBullet,
+        bulletPoint.x-pixelsFromBullet-(bulletIndex *lengthIncriment ),
+        globePoint.y
+    );
+    line.linewidth = linewidth;
+    line.stroke = strokeColor;
+    line.opacity = opacity;
+    lines.push(line);
+
+
+    //now go straight across to the actual point
+    var line = two.makeLine(
+        bulletPoint.x-pixelsFromBullet-(bulletIndex *lengthIncriment ),
+        globePoint.y,
+        globePoint.x,
+        globePoint.y
+    );
+    line.linewidth = linewidth;
+    line.stroke = strokeColor;
+    line.opacity = opacity;
+    lines.push(line);
+
+
+}
+function directLine(lines, globePoint,bulletPoint,sceneCoords,bulletIndex)
+{
+    var line = two.makeLine(
+        bulletPoint.x,
+        bulletPoint.y,
+        globePoint.x,
+        globePoint.y
+    );
+    line.opacity = determineLocationVisibility(sceneCoords) ? .5 : 0;
+    line.linewidth = 2;
+    lines.push(line);
 }
