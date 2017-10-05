@@ -1,4 +1,5 @@
 var scene, camera, renderer, globe, lines = [];
+var spinAmbiently = true;
 function sceneSetup() {
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(750, canvasWidth/canvasHeight, 0.1, 100000);
@@ -21,6 +22,9 @@ function sceneSetup() {
 
 		var boundingBox = new THREE.Box3().setFromObject(globe);
 		globe.radius = boundingBox.max;
+		globe.axis = new THREE.Vector3(0,1,0).normalize();
+
+		goto();
 
 		populateFacilities(facilities);
 	});
@@ -38,25 +42,19 @@ function sceneSetup() {
 }
 sceneSetup();
 
-function rotateAroundWorldAxis(object, axis, radians) {
-    var rotWorldMatrix = new THREE.Matrix4();
-    rotWorldMatrix.makeRotationAxis(axis.normalize(), radians);
-    rotWorldMatrix.multiply(object.matrix);
-    object.matrix = rotWorldMatrix;
-    object.rotation.setFromRotationMatrix(object.matrix);
-}
-function rotateAroundObjectAxis(object, axis, radians) {
+function rotateGlobe(radians) {
     var rotObjectMatrix = new THREE.Matrix4();
-    rotObjectMatrix.makeRotationAxis(axis.normalize(), radians);
-    object.matrix.multiply(rotObjectMatrix);
-    object.rotation.setFromRotationMatrix(object.matrix);
+    rotObjectMatrix.makeRotationAxis(globe.axis.normalize(), radians);
+    globe.matrix.multiply(rotObjectMatrix);
+    globe.rotation.setFromRotationMatrix(globe.matrix);
 }
 
 function animate() {
 	requestAnimationFrame(animate);
 
 	if (globe) {
-		rotateAroundObjectAxis(globe, new THREE.Vector3(0,1,0).normalize(),.4 * (Math.PI/180));
+		if (spinAmbiently) 
+			rotateGlobe(.1 * (Math.PI/180));
 		updateFacilities();
 		updateNewsStoryLines();
 	}
@@ -65,13 +63,19 @@ function animate() {
 }
 animate();
 
-function latLongToSceneCoords(lat, lon) {
+function goto(lat, long) {
+	var initialPosition = globe.matrix;
+	console.log(globe.matrix);
+	// rotateGlobe(globe, globe.axis, )
+}
+
+function latLongToSceneCoords(lat, long) {
 	lat = Number(lat);
-	lon = Number(lon);
+	long = Number(long);
 	var sceneCoords = new THREE.Vector3();
 	var radius = globe.radius.y;
 	var phi = (90-lat)*(Math.PI/180);
-	var theta = (lon+180)*(Math.PI/180);
+	var theta = (long+180)*(Math.PI/180);
 
 	sceneCoords.x = -((radius) * Math.sin(phi)*Math.cos(theta));
 	sceneCoords.z = ((radius) * Math.sin(phi)*Math.sin(theta));
