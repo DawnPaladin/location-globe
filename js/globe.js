@@ -41,8 +41,8 @@ function sceneSetup() {
 }
 sceneSetup();
 
-function rotateGlobe(radians) {
-	// TODO: input degrees instead of radians
+function rotateGlobe(degrees) {
+	var radians = degreesToRadians(degrees);
 	var rotObjectMatrix = new THREE.Matrix4();
 	rotObjectMatrix.makeRotationAxis(globe.axis.normalize(), -radians);
 	globe.matrix.multiply(rotObjectMatrix);
@@ -54,7 +54,7 @@ function rotateGlobe(radians) {
 function goTo(lat, long) { // lat is currently unused
 	var initialLong = globe.currentRotation.degrees;
 	var rotationAmount = long - initialLong;
-	rotateGlobe(degreesToRadians(rotationAmount));
+	rotateGlobe(rotationAmount);
 }
 function gotoFacility(facilityKey) {
 	goTo(facilities[facilityKey].lat,facilities[facilityKey].long);
@@ -98,7 +98,7 @@ function animate() {
 
 	if (globe) {
 		if (spinAmbiently) 
-			rotateGlobe(degreesToRadians(-.5));
+			rotateGlobe(-.5);
 		updateFacilities();
 		updateNewsStoryLines();
 	}
