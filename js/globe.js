@@ -12,6 +12,8 @@ function sceneSetup() {
 	loader.load(pathPrefix+'assets/globes_pack_thin26small.obm', function(obj) {
 		globe = obj;
 
+		$('#globe').removeClass('loading');
+
 		// axial tilt
 		globe.rotation.z = degreesToRadians(-23.5);
 		globe.rotation.x = degreesToRadians(23.5);
