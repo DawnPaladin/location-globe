@@ -42,21 +42,22 @@ function sceneSetup() {
 sceneSetup();
 
 function rotateGlobe(radians) {
-    var rotObjectMatrix = new THREE.Matrix4();
-    rotObjectMatrix.makeRotationAxis(globe.axis.normalize(), -radians);
-    globe.matrix.multiply(rotObjectMatrix);
-	 globe.rotation.setFromRotationMatrix(globe.matrix);
-	 globe.currentRotation.radians += radians;
-	 globe.currentRotation.degrees += radiansToDegrees(radians);
+	// TODO: input degrees instead of radians
+	var rotObjectMatrix = new THREE.Matrix4();
+	rotObjectMatrix.makeRotationAxis(globe.axis.normalize(), -radians);
+	globe.matrix.multiply(rotObjectMatrix);
+	globe.rotation.setFromRotationMatrix(globe.matrix);
+	globe.currentRotation.radians += radians;
+	globe.currentRotation.degrees += radiansToDegrees(radians);
 }
 
-function goto(lat, long) { // lat is currently unused
+function goTo(lat, long) { // lat is currently unused
 	var initialLong = globe.currentRotation.degrees;
 	var rotationAmount = long - initialLong;
 	rotateGlobe(degreesToRadians(rotationAmount));
 }
 function gotoFacility(facilityKey) {
-	goto(facilities[facilityKey].lat,facilities[facilityKey].long);
+	goTo(facilities[facilityKey].lat,facilities[facilityKey].long);
 }
 function moveTo(lat, long) { // lat is currently unused
 	var animationTime = 1000;
@@ -64,24 +65,27 @@ function moveTo(lat, long) { // lat is currently unused
 
 	var initialLong = globe.currentRotation.degrees;
 	var totalRotationAmount = long - initialLong;
-	var rotationPerTick = totalRotationAmount / numSteps;
-	babySteps(function() {
-		rotateGlobe(degreesToRadians(rotationPerTick));
+	babySteps(function(counter) {
+		// console.log(totalRotationAmount, counter, numSteps, initialLong, tween(totalRotationAmount, counter, numSteps, initialLong));
+		goTo(lat, tween(totalRotationAmount, counter, numSteps, initialLong));
 	}, animationTime, numSteps);
 }
 function moveToFacility(facilityKey) {
 	moveTo(facilities[facilityKey].lat,facilities[facilityKey].long);
 }
+function tween(delta, position, length, start) {
+	return delta * position / length + start;
+}
 function babySteps(callback, animationTime, numSteps) { // run the callback numSteps times over animationTime
 	var animationInterval = animationTime / numSteps;
 	var counter = 0;
 	var interval = setInterval(function() {
-		callback();
+		callback(counter);
 		counter++;
 		if (counter == numSteps) clearInterval(interval);
 	}, animationInterval);
 }
-
+function easeInOutQuad(t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t };
 function degreesToRadians(degrees) {
 	return degrees * (Math.PI/180);
 }
