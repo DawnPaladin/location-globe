@@ -67,14 +67,14 @@ function moveTo(lat, long) { // lat is currently unused
 	var totalRotationAmount = long - initialLong;
 	babySteps(function(counter) {
 		// console.log(totalRotationAmount, counter, numSteps, initialLong, tween(totalRotationAmount, counter, numSteps, initialLong));
-		goTo(lat, tween(totalRotationAmount, counter, numSteps, initialLong));
+		goTo(lat, tween(totalRotationAmount, counter, numSteps, initialLong, easeInOutQuart));
 	}, animationTime, numSteps);
 }
 function moveToFacility(facilityKey) {
 	moveTo(facilities[facilityKey].lat,facilities[facilityKey].long);
 }
-function tween(delta, position, length, start) {
-	return delta * position / length + start;
+function tween(delta, position, length, start, easingFunction) {
+	return delta * easingFunction(position / length) + start;
 }
 function babySteps(callback, animationTime, numSteps) { // run the callback numSteps times over animationTime
 	var animationInterval = animationTime / numSteps;
@@ -85,7 +85,7 @@ function babySteps(callback, animationTime, numSteps) { // run the callback numS
 		if (counter == numSteps) clearInterval(interval);
 	}, animationInterval);
 }
-function easeInOutQuad(t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t };
+function easeInOutQuart(t) { return t<.5 ? 8*t*t*t*t : 1-8*(--t)*t*t*t }; // from https://gist.github.com/gre/1650294
 function degreesToRadians(degrees) {
 	return degrees * (Math.PI/180);
 }
