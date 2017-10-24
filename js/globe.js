@@ -144,12 +144,16 @@ function sceneToCanvasCoords(sceneCoords) {
 
 function populateFacilities() {
 	for (var locationName in facilities) {
+		var locationData = facilities[locationName];
 		var $markerBox = $('<div class="bubble-target">');
 		var $marker = $('<img src="'+pathPrefix+'assets/marker.svg" alt="" class="marker" />');
 		$marker.attr('id', locationName);
 		var $bubble = $('<div class="bubble">');
-		$bubble.text(locationName);
-		var locationData = facilities[locationName];
+		var $bubbleLink = $('<a>')
+			.attr('href', locationData.url)
+			.text(locationData.fullName)
+		;
+		$bubble.append($bubbleLink);
 		locationData.markerBox = $markerBox;
 		var sceneCoords = latLongToSceneCoords(locationData.lat, locationData.long);
 		var canvasCoords = sceneToCanvasCoords(sceneCoords);
