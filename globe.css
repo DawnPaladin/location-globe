@@ -22,10 +22,13 @@ canvas {
 	align-items: center;
 	background: radial-gradient(circle at center, white 0, #C5F5FF 100%)
 }
+#globe a {
+	text-decoration: underline;
+}
 
 .bubble-target {
   position: absolute;
-  display: inline-block;
+  width: 28px;
 	z-index: 3
 }
 .bubble-target .bubble {
@@ -39,7 +42,7 @@ canvas {
 	z-index: 5;
   position: absolute;
 	top: -15px;
-	right: 250%;
+	right: 50px;
 }
 .bubble-target .bubble a {
 	color: white;
