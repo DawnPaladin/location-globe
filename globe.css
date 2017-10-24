@@ -36,11 +36,23 @@ canvas {
   text-align: center;
   padding: 5px 0;
   border-radius: 6px;
+	z-index: 1;
   position: absolute;
-  z-index: 1;
+	top: -15px;
+	right: 250%;
 }
 .bubble-target:hover .bubble {
   visibility: visible;
+}
+.bubble-target .bubble::after { /* bubble "tail" */
+	content: "";
+	position: absolute;
+	left: 100%;
+	top: 50%;
+	margin-top: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: transparent transparent transparent black;
 }
 .marker {
 	display: block;
