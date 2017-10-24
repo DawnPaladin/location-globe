@@ -7,38 +7,38 @@ function sceneSetup() {
 	renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 	renderer.setSize(canvasWidth, canvasHeight);
 	document.getElementById('globe').appendChild(renderer.domElement);
-	
+
 	var loader = new THREE.OBMLoader();
 	loader.load(pathPrefix+'assets/globes_pack_thin26small.obm', function(obj) {
 		globe = obj;
-		
+
 		$('#globe').removeClass('loading');
-		
+
 		// axial tilt
 		globe.rotation.z = degreesToRadians(-23.5);
 		globe.rotation.x = degreesToRadians(23.5);
-		
+
 		var landMaterial = new THREE.MeshLambertMaterial({ color: 0x5BA7FD });
 		var seaMaterial = new THREE.MeshLambertMaterial({ color: 0x101010, transparent: true, opacity: 0.25 });
 		globe.children[0].material = landMaterial;
 		globe.children[1].material = seaMaterial;
 		scene.add(globe);
-		
+
 		var boundingBox = new THREE.Box3().setFromObject(globe);
 		globe.radius = boundingBox.max;
 		globe.axis = new THREE.Vector3(0,1,0).normalize();
 		globe.currentRotation = { degrees: -90, radians: degreesToRadians(-90) };
-		
+
 		populateFacilities(facilities);
 	});
-	
+
 	var upperLight = new THREE.PointLight(0xCAECF6);
 	upperLight.position.y = 5;
 	upperLight.position.x = -5;
 	scene.add(upperLight);
 	var ambientLight = new THREE.AmbientLight(0x1D2E46);
 	scene.add(ambientLight);
-	
+
 	camera.position.z = 6.25;
 }
 sceneSetup();
@@ -64,7 +64,7 @@ function gotoFacility(facilityKey) {
 function moveTo(lat, long) { // lat is currently unused
 	var animationTime = 1000;
 	var numSteps = 100;
-	
+
 	var initialLong = globe.currentRotation.degrees;
 	var totalRotationAmount = long - initialLong;
 	babySteps(function(counter) {
@@ -97,14 +97,14 @@ function radiansToDegrees(radians) {
 
 function animate() {
 	requestAnimationFrame(animate);
-	
+
 	if (globe) {
-		if (spinAmbiently) 
+		if (spinAmbiently)
 		rotateGlobe(-.5);
 		updateFacilities();
 		updateNewsStoryLines();
 	}
-	
+
 	renderer.render(scene, camera);
 }
 animate();
@@ -116,15 +116,15 @@ function latLongToSceneCoords(lat, long) {
 	var radius = globe.radius.y;
 	var phi = (90-lat)*(Math.PI/180);
 	var theta = (long+180)*(Math.PI/180);
-	
+
 	sceneCoords.x = -((radius) * Math.sin(phi)*Math.cos(theta));
 	sceneCoords.z = ((radius) * Math.sin(phi)*Math.sin(theta));
 	sceneCoords.y = ((radius) * Math.cos(phi));
-	
+
 	rotObjectMatrix = new THREE.Matrix4();
 	rotObjectMatrix.makeRotationFromQuaternion(globe.quaternion);
 	sceneCoords.applyQuaternion(globe.quaternion);
-	
+
 	return sceneCoords;
 }
 function sceneToCanvasCoords(sceneCoords) {
@@ -132,48 +132,53 @@ function sceneToCanvasCoords(sceneCoords) {
 	var vector = new THREE.Vector3();
 	var canvas = renderer.domElement;
 	vector.set(sceneCoords.x, sceneCoords.y, sceneCoords.z);
-	
+
 	vector.project(camera);
-	
+
 	vector.x = Math.round( (  vector.x + 1 ) * canvas.width  / 2 );
 	vector.y = Math.round( ( -vector.y + 1 ) * canvas.height / 2 );
 	vector.z = 0;
-	
+
 	return vector;
 }
 
 function populateFacilities() {
 	for (var locationName in facilities) {
+		var $markerBox = $('<div class="bubble-target">');
 		var $marker = $('<img src="'+pathPrefix+'assets/marker.svg" alt="" class="marker" />');
 		$marker.attr('id', locationName);
+		var $bubble = $('<div class="bubble">');
+		$bubble.text(locationName);
 		var locationData = facilities[locationName];
-		locationData.marker = $marker;
+		locationData.markerBox = $markerBox;
 		var sceneCoords = latLongToSceneCoords(locationData.lat, locationData.long);
 		var canvasCoords = sceneToCanvasCoords(sceneCoords);
-		$marker.css({
+		$markerBox.css({
 			top: canvasCoords.y,
 			left: canvasCoords.x,
-			opacity: determineLocationVisibility(canvasCoords) ? 1 : 0,
+			opacity: determineLocationVisibility(sceneCoords) ? 1 : 0,
 		});
-		$marker.appendTo('#globe');
+		// debugger;
+		$markerBox.append($marker, $bubble);
+		$markerBox.appendTo('#globe');
 	}
 }
 function updateFacilities() {
 	for (var locationName in facilities) {
 		var locationData = facilities[locationName];
-		var $marker = locationData.marker;
+		var $markerBox = locationData.markerBox;
 		var sceneCoords = latLongToSceneCoords(locationData.lat, locationData.long);
 		var canvasCoords = sceneToCanvasCoords(sceneCoords);
-		$marker.css({
+		$markerBox.css({
 			top: canvasCoords.y,
 			left: canvasCoords.x,
 		});
-		
-		if ($marker.css('opacity') == 0 && determineLocationVisibility(sceneCoords) == true) {
-			$marker.fadeTo(1000, 1);
+
+		if ($markerBox.css('opacity') == 0 && determineLocationVisibility(sceneCoords) == true) {
+			$markerBox.fadeTo(1000, 1);
 		}
-		if ($marker.css('opacity') == 1 && determineLocationVisibility(sceneCoords) == false) {
-			$marker.fadeTo(500, 0);
+		if ($markerBox.css('opacity') == 1 && determineLocationVisibility(sceneCoords) == false) {
+			$markerBox.fadeTo(500, 0);
 		}
 	}
 	two.update();
@@ -194,14 +199,14 @@ function updateNewsStoryLines() {
 		}
 		var sceneCoords = latLongToSceneCoords(latlong.lat, latlong.long);
 		var canvasCoords = sceneToCanvasCoords(sceneCoords);
-		
+
 		var canvasLeftOffset = $('#globe').offset().left;
 		var canvasTopOffset = $('#globe').offset().top;
 		var bulletCoords = {
-			x: $(bullet).offset().left - canvasLeftOffset, 
+			x: $(bullet).offset().left - canvasLeftOffset,
 			y: $(bullet).offset().top - canvasTopOffset + 15
 		};
-		
+
 		//directLine(lines,canvasCoords,bulletCoords,sceneCoords,index);
 		//fancyLineFromBulletThenUpThenPoint(lines,canvasCoords,bulletCoords,sceneCoords,index);
 		fancyLineFromBulletThenUp(lines,canvasCoords,bulletCoords,sceneCoords,index);
@@ -218,7 +223,7 @@ function drawDotAtLocation(lines,canvasCoords,sceneCords) {
 	circle.linewidth = 1.2;
 	circle.opacity - .7;
 	lines.push(circle);
-	
+
 }
 function stylizedLine(lines, x1,y1,x2,y2,sceneCords) {
 	if(determineLocationVisibility(sceneCords)) {
@@ -229,20 +234,20 @@ function stylizedLine(lines, x1,y1,x2,y2,sceneCords) {
 		line.stroke = strokeColor;
 		line.opacity = .7;
 		lines.push(line);
-		
+
 		var line = two.makeLine(x1,y1,x2,y2);
 		line.linewidth = 2*scale;
 		line.stroke = strokeColor;
 		line.opacity = .8;
 		lines.push(line);
-		
+
 		var line = two.makeLine(x1,y1,x2,y2);
 		line.linewidth = 1*scale;
 		line.stroke = "rgb(255,255, 250)";
 		line.opacity = 1.;
 		lines.push(line);
 	}
-	
+
 }
 
 function fancyCurveFromBulletThenUp(lines, globePoint,bulletPoint,sceneCords,bulletIndex) {
@@ -251,7 +256,7 @@ function fancyCurveFromBulletThenUp(lines, globePoint,bulletPoint,sceneCords,bul
 	var curve = two.makeCurve(
 		bulletPoint.x,
 		bulletPoint.y+staticHeightAdjustmentToHitBullet,
-		
+
 		//globePoint.x,
 		//bulletPoint.y+staticHeightAdjustmentToHitBullet,
 		globePoint.x,
@@ -266,11 +271,11 @@ function fancyCurveFromBulletThenUp(lines, globePoint,bulletPoint,sceneCords,bul
 	curve.opacity = .9;
 	curve.noFill();
 	lines.push(curve);
-	
+
 }
 function fancyLineFromBulletThenUp(lines, globePoint,bulletPoint,sceneCords,bulletIndex) {
 	var staticHeightAdjustmentToHitBullet = -5;
-	
+
 	//start at the bullet point, move out al the way to the right,
 	stylizedLine(lines,
 		bulletPoint.x,
@@ -287,14 +292,14 @@ function fancyLineFromBulletThenUp(lines, globePoint,bulletPoint,sceneCords,bull
 		globePoint.y,
 		sceneCords
 	);
-	
+
 }
 
 function fancyLineFromBulletThenUpThenPoint(lines, globePoint,bulletPoint,sceneCords,bulletIndex) {
 	var pixelsFromBullet = 70;
 	var staticHeightAdjustmentToHitBullet = -5;
 	var lengthIncriment = 20;
-	
+
 	//start at the bullet point, move out some pixels to the right, then go up in progression
 	stylizedLine(
 		lines,
@@ -304,7 +309,7 @@ function fancyLineFromBulletThenUpThenPoint(lines, globePoint,bulletPoint,sceneC
 		bulletPoint.y+staticHeightAdjustmentToHitBullet,
 		sceneCords
 	);
-	
+
 	//now make a straight line uip to go to the position of the globe point
 	stylizedLine(
 		lines,
@@ -314,7 +319,7 @@ function fancyLineFromBulletThenUpThenPoint(lines, globePoint,bulletPoint,sceneC
 		globePoint.y,
 		sceneCords
 	);
-	
+
 	//now go straight across to the actual point
 	stylizedLine(
 		lines,
