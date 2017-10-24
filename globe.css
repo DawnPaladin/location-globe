@@ -1,5 +1,6 @@
 body {
 	margin: 0;
+	font-family: "Roboto", sans-serif;
 }
 canvas {
 	width: 100%;
@@ -48,7 +49,7 @@ canvas {
 }
 
 .news-header {
-	font-family: 'Nunito', sans-serif;
+	font-family: "Roboto Slab", serif;
 	font-weight: 700;
 	font-size: 1.5em;
 	margin-left: 1.6em;
@@ -57,13 +58,15 @@ canvas {
 	margin-top: 1em;
 }
 .news-story .headline {
-	font-family: 'Yanone Kaffeesatz', sans-serif;
-	font-size: 1.35em;
+	font-family: 'Roboto Condensed', sans-serif;
+	font-size: 1.25em;
 	margin-bottom: .2em;
 }
 .news-story .byline {
-	font-family: 'Nunito', sans-serif;
+	font-family: 'Roboto', sans-serif;
 	letter-spacing: 1px;
+	text-transform: uppercase;
+	font-size: .8em;
 }
 
 .two {
