@@ -19,7 +19,7 @@ var facilities = {
 	},
 	Aurora: {
 		lat: 41.795664,
-		long: 88.267239,
+		long: -88.267239,
 		fullName: "Aurora, Illinois, United States",
 		url: "http://www.hki.com/locations/americas/resupply",
 	},

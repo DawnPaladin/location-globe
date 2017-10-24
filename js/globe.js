@@ -1,5 +1,5 @@
 var scene, camera, renderer, globe, lines = [];
-var spinAmbiently = false;
+var spinAmbiently = true;
 
 function sceneSetup() {
 	scene = new THREE.Scene();
@@ -42,6 +42,13 @@ function sceneSetup() {
 	camera.position.z = 6.25;
 }
 sceneSetup();
+
+$('#globe').on('mouseover', function() {
+	spinAmbiently = false;
+});
+$('#globe').on('mouseout', function() {
+	spinAmbiently = true;
+});
 
 function rotateGlobe(degrees) {
 	var radians = degreesToRadians(degrees);
@@ -100,7 +107,7 @@ function animate() {
 
 	if (globe) {
 		if (spinAmbiently)
-		rotateGlobe(-.5);
+		rotateGlobe(-.25);
 		updateFacilities();
 		updateNewsStoryLines();
 	}
