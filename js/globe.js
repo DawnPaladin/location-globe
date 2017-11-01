@@ -31,6 +31,7 @@ function sceneSetup() {
 		});
 		globe.children[0].material = landMaterial;
 		globe.children[1].material = seaMaterial;
+
 		var glowSphereGeo = new THREE.SphereGeometry(1.5, 32, 16);
 		glowSphere = new THREE.Mesh(glowSphereGeo, glowMaterial);
 		glowSphere.visible = false;
@@ -122,9 +123,9 @@ function animate() {
 
 	if (globe) {
 		if (spinAmbiently)
-		rotateGlobe(-.25);
+			rotateGlobe(-.25);
 		updateFacilities();
-		updateNewsStoryLines();
+		// updateNewsStoryLines();
 	}
 
 	renderer.render(scene, camera);
@@ -168,8 +169,11 @@ function populateFacilities() {
 	for (var locationName in facilities) {
 		var locationData = facilities[locationName];
 		var $markerBox = $('<div class="bubble-target">');
-		var $marker = $('<img src="'+pathPrefix+'assets/marker.svg" alt="" class="marker" />');
-		$marker.attr('id', locationName);
+		var $marker = $('<a>')
+			.attr('href', locationData.url)
+			.attr('id', locationName)
+			.html('<img src="'+pathPrefix+'assets/marker.svg" alt="" class="marker" />')
+		;
 		var $bubble = $('<div class="bubble">');
 		var $bubbleLink = $('<a>')
 			.attr('href', locationData.url)
