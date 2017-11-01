@@ -13,6 +13,12 @@ canvas {
 #globe {
 	position: relative;
 }
+#hoverCircle {
+	border-radius: 50%;
+	background: rgba(0, 0, 255, .1);
+	position: absolute;
+	z-index: 3;
+}
 .globe-row {
 	display: flex;
 	flex-direction: row;

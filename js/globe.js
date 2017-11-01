@@ -57,14 +57,28 @@ function sceneSetup() {
 }
 sceneSetup();
 
-$('#globe').on('mouseover', function() {
-	spinAmbiently = false;
-	if (glowSphere) glowSphere.visible = true;
-});
-$('#globe').on('mouseout', function() {
-	spinAmbiently = true;
-	if (glowSphere) glowSphere.visible = false;
-});
+function hoverCircleSetup() {
+	var circleDiameter = canvasWidth * .8;
+	var circleOffset = canvasWidth * .1;
+	$('#hoverCircle').css({
+		width: circleDiameter,
+		height: circleDiameter,
+		left: circleOffset,
+		top: circleOffset,
+	});
+
+	$('#globe')
+		.on('mouseover', '#hoverCircle, .bubble, .bubble-target', function(event) {
+			spinAmbiently = false;
+			if (glowSphere) glowSphere.visible = true;
+		})
+		.on('mouseout', '#hoverCircle, .bubble, .bubble-target', function() {
+			spinAmbiently = true;
+			if (glowSphere) glowSphere.visible = false;
+		})
+	;
+}
+hoverCircleSetup();
 
 function rotateGlobe(degrees) {
 	var radians = degreesToRadians(degrees);
