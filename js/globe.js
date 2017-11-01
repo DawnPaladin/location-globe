@@ -1,4 +1,4 @@
-var scene, camera, renderer, globe, glowSphere, lines = [];
+var scene, camera, renderer, globe, lines = [];
 var spinAmbiently = true;
 
 function sceneSetup() {
@@ -20,23 +20,10 @@ function sceneSetup() {
 
 		var landMaterial = new THREE.MeshLambertMaterial({ color: 0x5BA7FD });
 		var seaMaterial = new THREE.MeshLambertMaterial({ color: 0x101010, transparent: true, opacity: 0.25 });
-		// glow material from https://stackoverflow.com/a/16291870/1805453, http://stemkoski.github.io/Three.js/Shader-Halo.html
-		var glowMaterial = new THREE.ShaderMaterial({
-			uniforms: {  },
-			vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
-			fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
-			side: THREE.BackSide,
-			blending: THREE.AdditiveBlending,
-			transparent: true
-		});
 		globe.children[0].material = landMaterial;
 		globe.children[1].material = seaMaterial;
 
-		var glowSphereGeo = new THREE.SphereGeometry(1.5, 32, 16);
-		glowSphere = new THREE.Mesh(glowSphereGeo, glowMaterial);
-		glowSphere.visible = false;
-
-		scene.add(globe, glowSphere);
+		scene.add(globe);
 
 		var boundingBox = new THREE.Box3().setFromObject(globe);
 		globe.radius = boundingBox.max;
@@ -60,7 +47,7 @@ sceneSetup();
 function hoverCircleSetup() {
 	var circleDiameter = canvasWidth * .8;
 	var circleOffset = canvasWidth * .1;
-	$('#hoverCircle').css({
+	$('#hoverCircle, #bgGlow').css({
 		width: circleDiameter,
 		height: circleDiameter,
 		left: circleOffset,
@@ -70,12 +57,12 @@ function hoverCircleSetup() {
 	$('#globe')
 		.on('mouseover', '#hoverCircle, .bubble, .bubble-target', function(event) {
 			spinAmbiently = false;
-			if (glowSphere) glowSphere.visible = true;
+			$('#bgGlow').css('opacity', .5);
 		})
 		.on('mouseout', '#hoverCircle, .bubble, .bubble-target', function() {
 			spinAmbiently = true;
-			if (glowSphere) glowSphere.visible = false;
-		})
+			$('#bgGlow').css('opacity', 0);
+	})
 	;
 }
 hoverCircleSetup();
