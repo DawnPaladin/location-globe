@@ -12,6 +12,7 @@ canvas {
 
 #globe {
 	position: relative;
+	margin-top: 200px;
 }
 #globe canvas {
 	position: relative;
@@ -37,7 +38,7 @@ canvas {
 	width: 100%;
 	justify-content: center;
 	align-items: center;
-	background: radial-gradient(circle at center, white 0, #C5F5FF 100%)
+	/*background: radial-gradient(circle at center, white 0, #C5F5FF 100%)*/
 }
 #globe a {
 	text-decoration: underline;
@@ -86,6 +87,9 @@ canvas {
 	margin-top: -7px;
 }
 
+.hidden {
+	display: none;
+}
 .news-header {
 	font-family: "Roboto Slab", serif;
 	font-weight: 700;
