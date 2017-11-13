@@ -30,15 +30,6 @@ canvas {
 	opacity: 0;
 	z-index: 1;
 }
-.globe-row {
-	display: flex;
-	flex-direction: row;
-	height: 500px;
-	width: 100%;
-	justify-content: center;
-	align-items: center;
-	background: radial-gradient(circle at center, white 0, #C5F5FF 100%)
-}
 #globe a {
 	text-decoration: underline;
 }
