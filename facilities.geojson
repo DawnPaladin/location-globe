@@ -1,0 +1,226 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Dallas"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -96.630416,
+          32.777663
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Toronto"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.515387,
+          43.797404
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "San Luis Potosi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -100.8826607,
+          22.0706074
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Aurora"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -88.267239,
+          41.795664
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Sydney"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          150.895261,
+          -33.839974
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Beijing"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.61790,
+          39.834400
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Tangerang"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.563991,
+          -6.202439
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Osaka"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.376828,
+          34.463401
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Beirut"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.4867727,
+          33.8892171
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Auckland"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          174.807265,
+          -36.899665
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Manila"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.045185,
+          14.604421
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Singapore"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.745220,
+          1.334590
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Meadowdale"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.181646,
+          -26.152224
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Istanbul"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.8720972,
+          41.0052367
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Dublin"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.364002,
+          53.324675
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Rugby"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -1.266980,
+          52.394085
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Madrid"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.69679,
+          40.451832
+        ]
+      }
+    }
+  ]
+}
