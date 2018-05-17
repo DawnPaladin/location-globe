@@ -1,18 +1,25 @@
-var scene, camera, renderer, globe, lines = [];
+var two, scene, camera, renderer, globe, lines = [];
+var $globe = $('.globe');
+if (!$globe.length) console.error("Globe element not found");
+var globeElement = $globe[0];
 var spinAmbiently = true;
 
 function sceneSetup() {
+	two = new Two({ width: canvasWidth, height: canvasHeight }).appendTo(globeElement);
+	$(two.renderer.domElement).addClass('two');
+
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(750, canvasWidth/canvasHeight, 0.1, 100000);
 	renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 	renderer.setSize(canvasWidth, canvasHeight);
-	document.getElementById('globe').appendChild(renderer.domElement);
+	globeElement.appendChild(renderer.domElement);
 
 	var loader = new THREE.OBMLoader();
-	loader.load(pathPrefix+'assets/globes_pack_thin26small.obm', function(obj) {
+
+	loader.load(pathPrefix+"assets/globes_pack_thin26small.obm", function(obj) {
 		globe = obj;
 
-		$('#globe').removeClass('loading');
+		$globe.removeClass('loading');
 
 		// axial tilt
 		globe.rotation.z = degreesToRadians(-23.5);
@@ -47,22 +54,22 @@ sceneSetup();
 function hoverCircleSetup() {
 	var circleDiameter = canvasWidth * .8;
 	var circleOffset = canvasWidth * .1;
-	$('#hoverCircle, #bgGlow').css({
+	$('.hoverCircle, .bgGlow').css({
 		width: circleDiameter,
 		height: circleDiameter,
 		left: circleOffset,
 		top: circleOffset,
 	});
 
-	$('#globe')
-		.on('mouseover', '#hoverCircle, .bubble, .bubble-target', function(event) {
+	$globe
+		.on('mouseover', '.hoverCircle, .bubble, .bubble-target', function(event) {
 			spinAmbiently = false;
-			$('#bgGlow').css('opacity', .5);
+			$('.bgGlow').css('opacity', .5);
 		})
-		.on('mouseout', '#hoverCircle, .bubble, .bubble-target', function() {
+		.on('mouseout', '.hoverCircle, .bubble, .bubble-target', function() {
 			spinAmbiently = true;
-			$('#bgGlow').css('opacity', 0);
-	})
+			$('.bgGlow').css('opacity', 0);
+		})
 	;
 }
 hoverCircleSetup();
@@ -191,7 +198,7 @@ function populateFacilities() {
 		});
 		// debugger;
 		$markerBox.append($marker, $bubble);
-		$markerBox.appendTo('#globe');
+		$markerBox.appendTo($globe);
 	}
 }
 function updateFacilities() {
@@ -231,8 +238,8 @@ function updateNewsStoryLines() {
 		var sceneCoords = latLongToSceneCoords(latlong.lat, latlong.long);
 		var canvasCoords = sceneToCanvasCoords(sceneCoords);
 
-		var canvasLeftOffset = $('#globe').offset().left;
-		var canvasTopOffset = $('#globe').offset().top;
+		var canvasLeftOffset = $globe.offset().left;
+		var canvasTopOffset = $globe.offset().top;
 		var bulletCoords = {
 			x: $(bullet).offset().left - canvasLeftOffset,
 			y: $(bullet).offset().top - canvasTopOffset + 15

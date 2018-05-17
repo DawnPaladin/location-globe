@@ -10,27 +10,38 @@ canvas {
 	background-image: url('loading.png');
 }
 
-#globe {
-	position: relative;
+.globe-row {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	justify-content: center;
+	align-items: center;
+	height: 700px;
 }
-#globe canvas {
+.globe {
+	position: absolute;
+	top: 60px;
+	right: -30px;
+	z-index: 2;
+}
+.globe canvas {
 	position: relative;
 	z-index: 2;
 }
-#hoverCircle, #bgGlow {
+.hoverCircle, .bgGlow {
 	border-radius: 50%;
 	position: absolute;
 }
-#hoverCircle {
+.hoverCircle {
 	z-index: 3;
 }
-#bgGlow {
+.bgGlow {
 	background: rgba(255, 255, 255, 0.5);
 	box-shadow: 0 0 20px 20px rgba(255, 255, 255, 0.5);
 	opacity: 0;
 	z-index: 1;
 }
-#globe a {
+.globe a {
 	text-decoration: underline;
 }
 
