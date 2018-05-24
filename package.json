@@ -9,5 +9,8 @@
   "private": true,
   "dependencies": {
     "uglify-js": "^3.3.27"
+  },
+  "scripts": {
+    "minify": "uglifyjs vendor/two.js vendor/three.js facilities.js vendor/OBJLoader.js vendor/OBMLoader.min.js js/globe.js -o js/globe.min.js -c -m"
   }
 }
