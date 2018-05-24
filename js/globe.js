@@ -16,7 +16,7 @@ function sceneSetup() {
 
 	var loader = new THREE.OBMLoader();
 
-	loader.load(pathPrefix+"assets/geometry.obm", function(obj) {
+	loader.load(globePath, function(obj) {
 		globe = obj;
 
 		$globe.removeClass('loading');
