@@ -6,5 +6,8 @@
   "repository": "https://bitbucket.org/webdevteamhki/news-globe/src/default/",
   "author": "James Harris",
   "license": "UNLICENSED",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "uglify-js": "^3.3.27"
+  }
 }

@@ -1,1 +1,3 @@
 .hg/
+.vs/
+node_modules/
