@@ -1,0 +1,10 @@
+{
+  "name": "news-globe",
+  "version": "1.0.0",
+  "description": "Spinny 3D globe for the front page of HKI.com.",
+  "main": "index.js",
+  "repository": "https://bitbucket.org/webdevteamhki/news-globe/src/default/",
+  "author": "James Harris",
+  "license": "UNLICENSED",
+  "private": true
+}
