@@ -16,7 +16,7 @@ function sceneSetup() {
 
 	var loader = new THREE.OBMLoader();
 
-	loader.load("http://test.hki.com/docs/default-source/theme-files/geometry.obm", function(obj) {
+	loader.load(pathPrefix+"assets/geometry.obm", function(obj) {
 		globe = obj;
 
 		$globe.removeClass('loading');
