@@ -8,9 +8,19 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "npm-run-all": "^4.1.3",
     "uglify-js": "^3.3.27"
   },
   "scripts": {
-    "minify": "uglifyjs vendor/two.js vendor/three.js facilities.js vendor/OBJLoader.js vendor/OBMLoader.min.js js/globe.js -o js/globe.min.js -c -m"
+    "build-en": "uglifyjs vendor/two.js vendor/three.js lang/en.js vendor/OBJLoader.js vendor/OBMLoader.min.js js/globe.js -o dist/globe-en.js -c -m",
+    "build-fr": "uglifyjs vendor/two.js vendor/three.js lang/fr.js vendor/OBJLoader.js vendor/OBMLoader.min.js js/globe.js -o dist/globe-fr.js -c -m",
+    "build-de": "uglifyjs vendor/two.js vendor/three.js lang/de.js vendor/OBJLoader.js vendor/OBMLoader.min.js js/globe.js -o dist/globe-de.js -c -m",
+    "build-it": "uglifyjs vendor/two.js vendor/three.js lang/it.js vendor/OBJLoader.js vendor/OBMLoader.min.js js/globe.js -o dist/globe-it.js -c -m",
+    "build-ru": "uglifyjs vendor/two.js vendor/three.js lang/ru.js vendor/OBJLoader.js vendor/OBMLoader.min.js js/globe.js -o dist/globe-ru.js -c -m",
+    "build-es": "uglifyjs vendor/two.js vendor/three.js lang/es.js vendor/OBJLoader.js vendor/OBMLoader.min.js js/globe.js -o dist/globe-es.js -c -m",
+    "build-ja": "uglifyjs vendor/two.js vendor/three.js lang/ja.js vendor/OBJLoader.js vendor/OBMLoader.min.js js/globe.js -o dist/globe-ja.js -c -m",
+    "build-chs": "uglifyjs vendor/two.js vendor/three.js lang/chs.js vendor/OBJLoader.js vendor/OBMLoader.min.js js/globe.js -o dist/globe-chs.js -c -m",
+    "build-cht": "uglifyjs vendor/two.js vendor/three.js lang/cht.js vendor/OBJLoader.js vendor/OBMLoader.min.js js/globe.js -o dist/globe-cht.js -c -m",
+    "build": "npm-run-all build-*"
   }
 }
