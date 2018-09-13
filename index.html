@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<link rel="stylesheet" href="globe.css">
+	<link rel="stylesheet" href="dist/globe.css">
 	<title>News Globe</title>
 </head>
 <body>
@@ -16,8 +16,8 @@
 	</div>
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	<script>
-		var canvasWidth = 800, canvasHeight = 800, pathPrefix = "";
-		var globePath = "assets/geometry.obm?sfvrsn=47446088_2";
+		var canvasWidth = 800, canvasHeight = 800, pathPrefix = "dist/";
+		var globePath = "dist/geometry.obm";
 		$('.globe').css({ width: canvasWidth, height: canvasHeight });
 	</script>
 	<script defer src="dist/globe-en.js"></script>
