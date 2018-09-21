@@ -179,7 +179,7 @@ function populateFacilities() {
 		var $marker = $('<a>')
 			.attr('href', locationData.url)
 			.attr('id', locationName)
-			.html('<img src="'+pathPrefix+'marker.svg" alt="" class="marker" />')
+			.html('<img src="'+pathPrefix+'marker.svg" alt="'+locationData.fullName+'" class="marker" />')
 		;
 		var $bubble = $('<div class="bubble">');
 		var $bubbleLink = $('<a>')
