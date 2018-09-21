@@ -62,7 +62,7 @@ function hoverCircleSetup() {
 	});
 
 	$globe
-		.on('mouseover', '.hoverCircle, .bubble, .bubble-target', function(event) {
+		.on('mouseover', '.hoverCircle, .bubble, .bubble-target', function() {
 			spinAmbiently = false;
 			$('.bgGlow').css('opacity', .5);
 		})
@@ -92,7 +92,7 @@ function goTo(lat, long) { // lat is currently unused
 function gotoFacility(facilityKey) {
 	goTo(facilities[facilityKey].lat,facilities[facilityKey].long);
 }
-function moveTo(lat, long) { // lat is currently unused
+function moveTo(lat, long) {
 	var animationTime = 1000;
 	var numSteps = 100;
 
@@ -133,7 +133,6 @@ function animate() {
 		if (spinAmbiently)
 			rotateGlobe(-.25);
 		updateFacilities();
-		// updateNewsStoryLines();
 	}
 
 	renderer.render(scene, camera);
@@ -223,158 +222,4 @@ function updateFacilities() {
 }
 function determineLocationVisibility(point) {
 	return point.z > 0.4;
-}
-function updateNewsStoryLines() {
-	lines.forEach(function(line) {
-		line.remove();
-	});
-	lines = [];
-	var $storyBullets = $('.news-story[data-lat]');
-	$storyBullets.each(function(index, bullet) {
-		var latlong = {
-			lat: $(bullet).attr('data-lat'),
-			long: $(bullet).attr('data-long')
-		}
-		var sceneCoords = latLongToSceneCoords(latlong.lat, latlong.long);
-		var canvasCoords = sceneToCanvasCoords(sceneCoords);
-
-		var canvasLeftOffset = $globe.offset().left;
-		var canvasTopOffset = $globe.offset().top;
-		var bulletCoords = {
-			x: $(bullet).offset().left - canvasLeftOffset,
-			y: $(bullet).offset().top - canvasTopOffset + 15
-		};
-
-		//directLine(lines,canvasCoords,bulletCoords,sceneCoords,index);
-		//fancyLineFromBulletThenUpThenPoint(lines,canvasCoords,bulletCoords,sceneCoords,index);
-		fancyLineFromBulletThenUp(lines,canvasCoords,bulletCoords,sceneCoords,index);
-		//fancyCurveFromBulletThenUp(lines,canvasCoords,bulletCoords,sceneCoords,index);
-		drawDotAtLocation(lines,canvasCoords,sceneCoords);
-	});
-	return lines;
-}
-function drawDotAtLocation(lines,canvasCoords,sceneCords) {
-	if(!determineLocationVisibility(sceneCords)) { return; }
-	var circle = two.makeCircle(canvasCoords.x,canvasCoords.y, 7);
-	circle.fill =  "rgb(240,240, 50)";
-	circle.stroke = "rgb(255,255, 250)";
-	circle.linewidth = 1.2;
-	circle.opacity - .7;
-	lines.push(circle);
-
-}
-function stylizedLine(lines, x1,y1,x2,y2,sceneCords) {
-	if(determineLocationVisibility(sceneCords)) {
-		var strokeColor = "rgb(220,220, 50)";
-		var scale  = 1.8;
-		var line = two.makeLine(x1,y1,x2,y2);
-		line.linewidth = 3*scale;
-		line.stroke = strokeColor;
-		line.opacity = .7;
-		lines.push(line);
-
-		var line = two.makeLine(x1,y1,x2,y2);
-		line.linewidth = 2*scale;
-		line.stroke = strokeColor;
-		line.opacity = .8;
-		lines.push(line);
-
-		var line = two.makeLine(x1,y1,x2,y2);
-		line.linewidth = 1*scale;
-		line.stroke = "rgb(255,255, 250)";
-		line.opacity = 1.;
-		lines.push(line);
-	}
-
-}
-
-function fancyCurveFromBulletThenUp(lines, globePoint,bulletPoint,sceneCords,bulletIndex) {
-	if(!determineLocationVisibility(sceneCords)) { return; }
-	var staticHeightAdjustmentToHitBullet = -5;
-	var curve = two.makeCurve(
-		bulletPoint.x,
-		bulletPoint.y+staticHeightAdjustmentToHitBullet,
-
-		//globePoint.x,
-		//bulletPoint.y+staticHeightAdjustmentToHitBullet,
-		globePoint.x,
-		bulletPoint.y+staticHeightAdjustmentToHitBullet,
-		globePoint.x,
-		globePoint.y,
-		true
-	);
-	var strokeColor = "rgb(220,220, 50)";
-	curve.linewidth = 3;
-	curve.stroke = strokeColor;
-	curve.opacity = .9;
-	curve.noFill();
-	lines.push(curve);
-
-}
-function fancyLineFromBulletThenUp(lines, globePoint,bulletPoint,sceneCords,bulletIndex) {
-	var staticHeightAdjustmentToHitBullet = -5;
-
-	//start at the bullet point, move out al the way to the right,
-	stylizedLine(lines,
-		bulletPoint.x,
-		bulletPoint.y+staticHeightAdjustmentToHitBullet,
-		globePoint.x,
-		bulletPoint.y+staticHeightAdjustmentToHitBullet,
-		sceneCords
-	);
-	//now go straight across to the actual point
-	stylizedLine(lines,
-		globePoint.x,
-		bulletPoint.y+staticHeightAdjustmentToHitBullet,
-		globePoint.x,
-		globePoint.y,
-		sceneCords
-	);
-
-}
-
-function fancyLineFromBulletThenUpThenPoint(lines, globePoint,bulletPoint,sceneCords,bulletIndex) {
-	var pixelsFromBullet = 70;
-	var staticHeightAdjustmentToHitBullet = -5;
-	var lengthIncriment = 20;
-
-	//start at the bullet point, move out some pixels to the right, then go up in progression
-	stylizedLine(
-		lines,
-		bulletPoint.x,
-		bulletPoint.y+staticHeightAdjustmentToHitBullet,
-		bulletPoint.x-pixelsFromBullet-(bulletIndex *lengthIncriment ),
-		bulletPoint.y+staticHeightAdjustmentToHitBullet,
-		sceneCords
-	);
-
-	//now make a straight line uip to go to the position of the globe point
-	stylizedLine(
-		lines,
-		bulletPoint.x-pixelsFromBullet-(bulletIndex *lengthIncriment ),
-		bulletPoint.y+staticHeightAdjustmentToHitBullet,
-		bulletPoint.x-pixelsFromBullet-(bulletIndex *lengthIncriment ),
-		globePoint.y,
-		sceneCords
-	);
-
-	//now go straight across to the actual point
-	stylizedLine(
-		lines,
-		bulletPoint.x-pixelsFromBullet-(bulletIndex *lengthIncriment ),
-		globePoint.y,
-		globePoint.x,
-		globePoint.y,
-		sceneCords
-	);
-}
-function directLine(lines, globePoint,bulletPoint,sceneCords,bulletIndex) {
-	stylizedLine(
-		lines,
-		bulletPoint.x,
-		bulletPoint.y,
-		globePoint.x,
-		globePoint.y,
-		sceneCords
-	);
 }
