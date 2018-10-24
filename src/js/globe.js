@@ -78,6 +78,7 @@
 	hoverCircleSetup();
 
 	function rotateGlobe(degrees) {
+		if (!globe.axis || !globe.radius) return;
 		var radians = degreesToRadians(degrees);
 		var rotObjectMatrix = new THREE.Matrix4();
 		rotObjectMatrix.makeRotationAxis(globe.axis.normalize(), -radians);
@@ -132,7 +133,7 @@
 	function animate() {
 		requestAnimationFrame(animate);
 
-		if (globe) {
+		if (globe.radius) {
 			if (spinAmbiently)
 				rotateGlobe(-.25);
 			updateFacilities();
