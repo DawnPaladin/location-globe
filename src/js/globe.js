@@ -12,6 +12,7 @@
 		scene = new THREE.Scene();
 		camera = new THREE.PerspectiveCamera(750, canvasWidth/canvasHeight, 0.1, 100000);
 		renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+		renderer.localClippingEnabled = true;
 		renderer.setSize(canvasWidth, canvasHeight);
 		globeElement.appendChild(renderer.domElement);
 
@@ -26,7 +27,8 @@
 			globe.rotation.z = degreesToRadians(-23.5);
 			globe.rotation.x = degreesToRadians(23.5);
 
-			var landMaterial = new THREE.MeshLambertMaterial({ color: 0x5BA7FD });
+			var clippingPlane = new THREE.Plane( new THREE.Vector3( 0, 0, 1 ), 0 );
+			var landMaterial = new THREE.MeshLambertMaterial({ color: 0x5BA7FD, clippingPlanes: [clippingPlane], wireframe: true });
 			var seaMaterial = new THREE.MeshLambertMaterial({ color: 0x101010, transparent: true, opacity: 0.25 });
 			globe.children[0].material = landMaterial;
 			globe.children[1].material = seaMaterial;
