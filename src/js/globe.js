@@ -16,7 +16,16 @@
 		renderer.setSize(canvasWidth, canvasHeight);
 		globeElement.appendChild(renderer.domElement);
 
-		var loader = new THREE.OBMLoader();
+		globeFileExtension = globePath.slice(-3).toUpperCase();
+		if (globeFileExtension == "OBJ") {
+			console.log("Loading OBJ");
+			var loader = new THREE.OBJLoader();
+		} else if (globeFileExtension == "OBM") {
+			console.log("Loading OBM");
+			var loader = new THREE.OBMLoader();
+		} else {
+			throw "File extension of " + globePath + " not recognized. Cannot load globe.";
+		}
 
 		loader.load(globePath, function(obj) {
 			globe = obj;
@@ -27,11 +36,14 @@
 			globe.rotation.z = degreesToRadians(-23.5);
 			globe.rotation.x = degreesToRadians(23.5);
 
-			var clippingPlane = new THREE.Plane( new THREE.Vector3( 0, 0, 1 ), 0 );
-			var landMaterial = new THREE.MeshLambertMaterial({ color: 0x5BA7FD, clippingPlanes: [clippingPlane], wireframe: true });
-			var seaMaterial = new THREE.MeshLambertMaterial({ color: 0x101010, transparent: true, opacity: 0.25 });
-			globe.children[0].material = landMaterial;
-			globe.children[1].material = seaMaterial;
+			var clippingPlane = new THREE.Plane( new THREE.Vector3( 0, 0, 1 ), -0.2 );
+			var flatMaterial = new THREE.MeshBasicMaterial({
+				color: 0xffffff,
+				clippingPlanes: [clippingPlane],
+			})
+			globe.children[0].material = flatMaterial;
+			// var basicMaterial = new THREE.MeshBasicMaterial();
+			// globe.children[0].material = basicMaterial;
 
 			scene.add(globe);
 
@@ -43,14 +55,10 @@
 			populateFacilities(facilities);
 		});
 
-		var upperLight = new THREE.PointLight(0xCAECF6);
-		upperLight.position.y = 5;
-		upperLight.position.x = -5;
-		scene.add(upperLight);
-		var ambientLight = new THREE.AmbientLight(0x1D2E46);
+		var ambientLight = new THREE.AmbientLight(0xffffff);
 		scene.add(ambientLight);
 
-		camera.position.z = 6.25;
+		camera.position.z = 5.25;
 	}
 	sceneSetup();
 
