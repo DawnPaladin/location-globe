@@ -17,8 +17,10 @@
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	<script>
 		var canvasWidth = 800, canvasHeight = 800, pathPrefix = "dist/";
-		var globePath = "dist/geometry.obm";
+		var globePath = "assets/mesh2.obj";
 		$('.globe').css({ width: canvasWidth, height: canvasHeight });
+		var preloadImg = new Image();
+		preloadImg.src = "news-globe/marker.svg";
 	</script>
 	<script src="src/vendor/two.js"></script>
 	<script src="src/vendor/three.js"></script>
